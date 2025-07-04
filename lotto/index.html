@@ -57,6 +57,18 @@
           <h3 class="font-medium mb-2">ชุดที่พบในผลย้อนหลัง:</h3>
           <div id="expected-sets-content" class="flex flex-wrap gap-2"></div>
         </div>
+        
+        <!-- Prominent Numbers Analysis -->
+        <div id="prominent-numbers-section" class="mt-4 pt-4 border-t hidden">
+          <h3 class="font-medium mb-2">เลขเด่นจากผลย้อนหลัง:</h3>
+          <div id="prominent-numbers-content" class="space-y-2"></div>
+          
+          <!-- Top 3 Single Digits Summary -->
+          <div id="prominent-single-digits" class="mt-6 pt-4 border-t">
+            <h4 class="font-medium mb-2">เลขเด่นหลักเดียว (Top 3):</h4>
+            <div id="prominent-single-digits-content" class="flex flex-wrap gap-3"></div>
+          </div>
+        </div>
       </div>
       
       <!-- Random Number Generation System -->
@@ -132,39 +144,6 @@
     <div class="bg-white rounded-lg shadow-sm p-6">
       <h2 class="text-xl font-bold mb-4">ระบบคัดเลขเด่น</h2>
       
-      <!-- Past 3 days results input -->
-      <div class="mb-6 border-b pb-6">
-        <h3 class="font-medium mb-3">ผลย้อนหลัง 3 วัน</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label class="block mb-2">วันที่ 1 (ล่าสุด)</label>
-            <input type="text" id="day1-result" class="w-full p-2 border rounded" placeholder="เช่น 27" maxlength="2">
-          </div>
-          <div>
-            <label class="block mb-2">วันที่ 2</label>
-            <input type="text" id="day2-result" class="w-full p-2 border rounded" placeholder="เช่น 45" maxlength="2">
-          </div>
-          <div>
-            <label class="block mb-2">วันที่ 3</label>
-            <input type="text" id="day3-result" class="w-full p-2 border rounded" placeholder="เช่น 89" maxlength="2">
-          </div>
-        </div>
-        
-        <button id="predict-prominent" class="mt-4 bg-yellow-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-yellow-700 transition">
-          ทำนายเลขเด่น
-        </button>
-        
-        <div id="prominent-prediction" class="mt-4 p-4 border rounded bg-gray-50 hidden">
-          <h4 class="font-medium mb-2">ผลการทำนายเลขเด่น:</h4>
-          <div id="prominent-numbers" class="space-y-2"></div>
-          
-          <div id="prominent-single-digits" class="mt-6 pt-4 border-t">
-            <h4 class="font-medium mb-2">เลขเด่นหลักเดียว (Top 3):</h4>
-            <div id="prominent-single-digits-content" class="flex flex-wrap gap-3"></div>
-          </div>
-        </div>
-      </div>
-      
       <div class="mb-6">
         <h3 class="font-medium mb-3">เลือกชุด</h3>
         <div class="flex flex-wrap gap-2">
@@ -228,7 +207,7 @@
         <table class="w-full border-collapse">
           <thead>
             <tr class="bg-gray-100">
-              <th class="border p-2 text-center">ผลย้อนหลัง</th>
+              <th class="border p-2 text-center">ตัวเลข</th>
               <th class="border p-2 text-center">เลขเด่น</th>
             </tr>
           </thead>
@@ -275,32 +254,6 @@
             </tr>
           </tbody>
         </table>
-      </div>
-      
-      <!-- Top 3 Single Digits Summary -->
-      <div class="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-        <h3 class="text-lg font-bold mb-3">สรุปเลขเด่นหลักเดียว 3 ตัว</h3>
-        <div class="flex justify-center gap-6 mb-4">
-          <div class="single-digit single-digit-1 relative">
-            <span>5</span>
-            <div class="text-xs bg-white px-2 py-1 rounded-full absolute -top-2 -right-2 border">
-              8x
-            </div>
-          </div>
-          <div class="single-digit single-digit-2 relative">
-            <span>4</span>
-            <div class="text-xs bg-white px-2 py-1 rounded-full absolute -top-2 -right-2 border">
-              6x
-            </div>
-          </div>
-          <div class="single-digit single-digit-3 relative">
-            <span>3</span>
-            <div class="text-xs bg-white px-2 py-1 rounded-full absolute -top-2 -right-2 border">
-              5x
-            </div>
-          </div>
-        </div>
-        <p class="text-center text-sm">จากการวิเคราะห์เลขเด่นทั้งหมด พบว่าเลข 5, 4, และ 3 เป็นเลขที่ปรากฏบ่อยที่สุด</p>
       </div>
     </div>
   </div>
@@ -478,6 +431,23 @@
       background-color: #d1fae5 !important;
       border-color: #34d399 !important;
     }
+    .digit-position {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-weight: 500;
+      margin-right: 0.5rem;
+    }
+    .digit-tens {
+      background-color: #e0f2fe;
+      border: 1px solid #38bdf8;
+      color: #0369a1;
+    }
+    .digit-units {
+      background-color: #fef9c3;
+      border: 1px solid #facc15;
+      color: #854d0e;
+    }
   </style>
 
   <script>
@@ -504,24 +474,30 @@
       '9': ['45', '69', '3']
     };
     
+    // Function to convert single digit to two digits
+    function formatProminentNumber(num) {
+      if (num.length === 1) {
+        return '0' + num;
+      }
+      return num;
+    }
+    
     // Calculate the frequency of each digit across all predefined prominent numbers
-    function calculateOverallDigitFrequency() {
+    function calculateDigitFrequency(numbers) {
       const digitFrequency = {};
       for (let i = 0; i <= 9; i++) {
         digitFrequency[i] = 0;
       }
       
-      // Count occurrences of each digit in all predefined prominent numbers
-      Object.values(predefinedProminentNumbers).forEach(numbers => {
-        numbers.forEach(num => {
-          // Handle both single and double digit numbers
-          if (num.length === 1) {
-            digitFrequency[parseInt(num)]++;
-          } else {
-            digitFrequency[parseInt(num[0])]++;
-            digitFrequency[parseInt(num[1])]++;
+      // Count occurrences of each digit in the numbers
+      numbers.forEach(num => {
+        // For each digit in the number
+        for (let i = 0; i < num.length; i++) {
+          const digit = parseInt(num[i]);
+          if (!isNaN(digit)) {
+            digitFrequency[digit]++;
           }
-        });
+        }
       });
       
       return digitFrequency;
@@ -533,17 +509,6 @@
         n = n.trim();
         return n.length === 1 ? '0' + n : n;
       }).filter(n => /^\d{2}$/.test(n)))];
-    }
-
-    function validateSingleInput(input) {
-      if (!input) return '';
-      input = input.trim();
-      if (/^\d{1}$/.test(input)) {
-        return '0' + input;
-      } else if (/^\d{2}$/.test(input)) {
-        return input;
-      }
-      return '';
     }
 
     function formatNumber(num) {
@@ -614,10 +579,14 @@
       const analysisContent = document.getElementById('analysis-content');
       const expectedSetsDiv = document.getElementById('expected-sets');
       const expectedSetsContent = document.getElementById('expected-sets-content');
+      const prominentNumbersSection = document.getElementById('prominent-numbers-section');
+      const prominentNumbersContent = document.getElementById('prominent-numbers-content');
+      const prominentSingleDigitsContent = document.getElementById('prominent-single-digits-content');
       
       if (pastResults.length === 0) {
         analysisContent.innerHTML = '<p class="text-red-500">กรุณากรอกผลย้อนหลังที่ถูกต้อง</p>';
         expectedSetsDiv.classList.add('hidden');
+        prominentNumbersSection.classList.add('hidden');
         return;
       }
       
@@ -626,6 +595,8 @@
       
       analysisContent.innerHTML = '';
       expectedSetsContent.innerHTML = '';
+      prominentNumbersContent.innerHTML = '';
+      prominentSingleDigitsContent.innerHTML = '';
       
       // Create analysis table
       const table = document.createElement('table');
@@ -736,6 +707,217 @@
         moreText.textContent = `+ อีก ${expectedSets.length - displayLimit} ชุด`;
         expectedSetsContent.appendChild(moreText);
       }
+      
+      // Process prominent numbers based on past results
+      prominentNumbersSection.classList.remove('hidden');
+      
+      // Get all prominent numbers based on both first and last digits of each past result
+      const allProminentNumbers = [];
+      const prominentNumbersByDigit = {
+        tens: {}, // หลักสิบ
+        units: {}  // หลักหน่วย
+      };
+      
+      pastResults.forEach(num => {
+        const tensDigit = num[0]; // Get the first digit (หลักสิบ)
+        const unitsDigit = num[1]; // Get the last digit (หลักหน่วย)
+        
+        // Process tens digit
+        if (predefinedProminentNumbers[tensDigit]) {
+          if (!prominentNumbersByDigit.tens[tensDigit]) {
+            prominentNumbersByDigit.tens[tensDigit] = [];
+          }
+          
+          predefinedProminentNumbers[tensDigit].forEach(prominentNum => {
+            const formattedNum = formatProminentNumber(prominentNum);
+            prominentNumbersByDigit.tens[tensDigit].push(formattedNum);
+            allProminentNumbers.push(formattedNum);
+          });
+        }
+        
+        // Process units digit
+        if (predefinedProminentNumbers[unitsDigit]) {
+          if (!prominentNumbersByDigit.units[unitsDigit]) {
+            prominentNumbersByDigit.units[unitsDigit] = [];
+          }
+          
+          predefinedProminentNumbers[unitsDigit].forEach(prominentNum => {
+            const formattedNum = formatProminentNumber(prominentNum);
+            prominentNumbersByDigit.units[unitsDigit].push(formattedNum);
+            allProminentNumbers.push(formattedNum);
+          });
+        }
+      });
+      
+      // Display prominent numbers by digit position
+      // First, display tens digit (หลักสิบ) prominent numbers
+      if (Object.keys(prominentNumbersByDigit.tens).length > 0) {
+        const tensSection = document.createElement('div');
+        tensSection.className = 'mb-4';
+        
+        const tensTitle = document.createElement('h4');
+        tensTitle.className = 'font-medium mb-2';
+        tensTitle.innerHTML = 'เลขเด่นจาก<span class="digit-position digit-tens ml-1">หลักสิบ</span>:';
+        tensSection.appendChild(tensTitle);
+        
+        Object.keys(prominentNumbersByDigit.tens).forEach(digit => {
+          const digitSection = document.createElement('div');
+          digitSection.className = 'mb-3';
+          
+          const digitTitle = document.createElement('div');
+          digitTitle.className = 'text-sm font-medium mb-2';
+          digitTitle.textContent = `จากเลข ${digit}:`;
+          digitSection.appendChild(digitTitle);
+          
+          const numbersContainer = document.createElement('div');
+          numbersContainer.className = 'flex flex-wrap gap-2';
+          
+          // Remove duplicates
+          const uniqueNumbers = [...new Set(prominentNumbersByDigit.tens[digit])];
+          
+          uniqueNumbers.forEach(num => {
+            const numElement = document.createElement('div');
+            numElement.className = 'prominent-number prominent-number-medium';
+            numElement.textContent = num;
+            numbersContainer.appendChild(numElement);
+          });
+          
+          digitSection.appendChild(numbersContainer);
+          tensSection.appendChild(digitSection);
+        });
+        
+        prominentNumbersContent.appendChild(tensSection);
+      }
+      
+      // Then, display units digit (หลักหน่วย) prominent numbers
+      if (Object.keys(prominentNumbersByDigit.units).length > 0) {
+        const unitsSection = document.createElement('div');
+        unitsSection.className = 'mb-4';
+        
+        const unitsTitle = document.createElement('h4');
+        unitsTitle.className = 'font-medium mb-2';
+        unitsTitle.innerHTML = 'เลขเด่นจาก<span class="digit-position digit-units ml-1">หลักหน่วย</span>:';
+        unitsSection.appendChild(unitsTitle);
+        
+        Object.keys(prominentNumbersByDigit.units).forEach(digit => {
+          const digitSection = document.createElement('div');
+          digitSection.className = 'mb-3';
+          
+          const digitTitle = document.createElement('div');
+          digitTitle.className = 'text-sm font-medium mb-2';
+          digitTitle.textContent = `จากเลข ${digit}:`;
+          digitSection.appendChild(digitTitle);
+          
+          const numbersContainer = document.createElement('div');
+          numbersContainer.className = 'flex flex-wrap gap-2';
+          
+          // Remove duplicates
+          const uniqueNumbers = [...new Set(prominentNumbersByDigit.units[digit])];
+          
+          uniqueNumbers.forEach(num => {
+            const numElement = document.createElement('div');
+            numElement.className = 'prominent-number prominent-number-high';
+            numElement.textContent = num;
+            numbersContainer.appendChild(numElement);
+          });
+          
+          digitSection.appendChild(numbersContainer);
+          unitsSection.appendChild(digitSection);
+        });
+        
+        prominentNumbersContent.appendChild(unitsSection);
+      }
+      
+      // Add a legend for the colors
+      const legend = document.createElement('div');
+      legend.className = 'mt-4 mb-4 p-3 bg-gray-50 border rounded';
+      legend.innerHTML = `
+        <p class="mb-2 font-medium">คำอธิบายสี:</p>
+        <div class="flex flex-wrap gap-4">
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-red-100 border border-red-500 mr-2"></div>
+            <span class="text-sm">= เลขเด่นจากหลักหน่วย</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-yellow-100 border border-yellow-500 mr-2"></div>
+            <span class="text-sm">= เลขเด่นจากหลักสิบ</span>
+          </div>
+        </div>
+      `;
+      prominentNumbersContent.appendChild(legend);
+      
+      // Remove duplicates from all prominent numbers
+      const uniqueProminentNumbers = [...new Set(allProminentNumbers)];
+      
+      // Calculate digit frequency from all unique prominent numbers
+      const digitFrequency = calculateDigitFrequency(uniqueProminentNumbers);
+      
+      // Sort digits by frequency
+      const sortedDigits = Object.keys(digitFrequency).sort((a, b) => {
+        return digitFrequency[b] - digitFrequency[a];
+      });
+      
+      // Display top 3 single digits
+      const top3Digits = sortedDigits.slice(0, 3);
+      
+      // Create single digit elements
+      top3Digits.forEach((digit, index) => {
+        const digitElement = document.createElement('div');
+        digitElement.className = `single-digit single-digit-${index + 1}`;
+        digitElement.textContent = digit;
+        
+        // Add frequency info
+        const frequencyBadge = document.createElement('div');
+        frequencyBadge.className = 'text-xs bg-white px-2 py-1 rounded-full absolute -top-2 -right-2 border';
+        frequencyBadge.textContent = `${digitFrequency[digit]}x`;
+        digitElement.style.position = 'relative';
+        digitElement.appendChild(frequencyBadge);
+        
+        prominentSingleDigitsContent.appendChild(digitElement);
+      });
+      
+      // Add explanation
+      const explanation = document.createElement('div');
+      explanation.className = 'mt-4 text-sm text-gray-600';
+      explanation.innerHTML = `
+        <p>เลขเด่นหลักเดียว 3 อันดับแรก คือ ${top3Digits.join(', ')} โดยพิจารณาจากความถี่ที่ปรากฏในเลขเด่นทั้งหมด</p>
+        <p class="mt-1">สามารถนำไปใช้ในการเลือกเลข 2 หลักที่มีตัวเลขเหล่านี้</p>
+      `;
+      prominentSingleDigitsContent.appendChild(explanation);
+      
+      // Add a summary of all prominent numbers
+      const summarySection = document.createElement('div');
+      summarySection.className = 'mt-6 pt-4 border-t';
+      
+      const summaryTitle = document.createElement('h4');
+      summaryTitle.className = 'font-medium mb-2';
+      summaryTitle.textContent = 'สรุปเลขเด่นทั้งหมด:';
+      summarySection.appendChild(summaryTitle);
+      
+      const summaryContainer = document.createElement('div');
+      summaryContainer.className = 'flex flex-wrap gap-2';
+      
+      // Sort unique prominent numbers
+      uniqueProminentNumbers.sort((a, b) => parseInt(a) - parseInt(b));
+      
+      uniqueProminentNumbers.forEach(num => {
+        const numElement = document.createElement('div');
+        
+        // Check if this number contains any of the top 3 digits
+        let prominenceClass = 'prominent-number-low';
+        if (num.includes(top3Digits[0])) {
+          prominenceClass = 'prominent-number-high';
+        } else if (num.includes(top3Digits[1])) {
+          prominenceClass = 'prominent-number-medium';
+        }
+        
+        numElement.className = `prominent-number ${prominenceClass}`;
+        numElement.textContent = num;
+        summaryContainer.appendChild(numElement);
+      });
+      
+      summarySection.appendChild(summaryContainer);
+      prominentNumbersContent.appendChild(summarySection);
     });
 
     // Prediction system
@@ -995,241 +1177,6 @@
       }, 100);
     });
 
-    // Prominent Number Prediction System
-    document.getElementById('predict-prominent').addEventListener('click', function() {
-      const day1Result = validateSingleInput(document.getElementById('day1-result').value);
-      const day2Result = validateSingleInput(document.getElementById('day2-result').value);
-      const day3Result = validateSingleInput(document.getElementById('day3-result').value);
-      
-      const prominentPrediction = document.getElementById('prominent-prediction');
-      const prominentNumbers = document.getElementById('prominent-numbers');
-      const prominentSingleDigits = document.getElementById('prominent-single-digits-content');
-      
-      // Check if we have at least one day of results
-      if (!day1Result) {
-        prominentNumbers.innerHTML = '<p class="text-red-500">กรุณากรอกผลย้อนหลังอย่างน้อย 1 วัน</p>';
-        prominentPrediction.classList.remove('hidden');
-        return;
-      }
-      
-      // Show the prediction section
-      prominentPrediction.classList.remove('hidden');
-      prominentNumbers.innerHTML = '';
-      prominentSingleDigits.innerHTML = '';
-      
-      // Extract digits from the results
-      const digits = [];
-      
-      if (day1Result) {
-        digits.push(parseInt(day1Result[0]));
-        digits.push(parseInt(day1Result[1]));
-      }
-      
-      if (day2Result) {
-        digits.push(parseInt(day2Result[0]));
-        digits.push(parseInt(day2Result[1]));
-      }
-      
-      if (day3Result) {
-        digits.push(parseInt(day3Result[0]));
-        digits.push(parseInt(day3Result[1]));
-      }
-      
-      // Count frequency of each digit
-      const digitFrequency = {};
-      for (let i = 0; i <= 9; i++) {
-        digitFrequency[i] = 0;
-      }
-      
-      digits.forEach(digit => {
-        digitFrequency[digit]++;
-      });
-      
-      // Create a list of digits sorted by frequency
-      const sortedDigits = Object.keys(digitFrequency).sort((a, b) => {
-        return digitFrequency[b] - digitFrequency[a];
-      });
-      
-      // Create prediction models
-      const predictionModels = {
-        // Model 1: Predefined prominent numbers based on the last digit
-        predefined: {
-          title: 'เลขเด่นตามตาราง',
-          numbers: []
-        },
-        // Model 2: Most frequent digits
-        mostFrequent: {
-          title: 'เลขเด่นตามความถี่',
-          numbers: []
-        },
-        // Model 3: Pattern-based prediction
-        patternBased: {
-          title: 'เลขเด่นตามรูปแบบ',
-          numbers: []
-        }
-      };
-      
-      // Model 1: Use predefined prominent numbers based on the last digit of day1Result
-      const lastDigit = day1Result[1];
-      if (predefinedProminentNumbers[lastDigit]) {
-        predefinedProminentNumbers[lastDigit].forEach(num => {
-          // Convert single digits to two digits
-          if (num.length === 1) {
-            predictionModels.predefined.numbers.push('0' + num);
-          } else {
-            predictionModels.predefined.numbers.push(num);
-          }
-        });
-      }
-      
-      // Model 2: Most frequent digits (top 3)
-      const topDigits = sortedDigits.slice(0, 3);
-      
-      // Generate combinations of top digits
-      for (let i = 0; i < topDigits.length; i++) {
-        for (let j = 0; j < topDigits.length; j++) {
-          const num = `${topDigits[i]}${topDigits[j]}`;
-          predictionModels.mostFrequent.numbers.push(num);
-        }
-      }
-      
-      // Model 3: Pattern-based prediction
-      // Look for patterns in the sequence
-      if (day1Result && day2Result) {
-        // Calculate differences between consecutive days
-        const diff1 = (parseInt(day1Result) - parseInt(day2Result) + 100) % 100;
-        
-        // Predict next number based on the pattern
-        const predictedNum = (parseInt(day1Result) + diff1) % 100;
-        const formattedNum = predictedNum < 10 ? `0${predictedNum}` : `${predictedNum}`;
-        
-        predictionModels.patternBased.numbers.push(formattedNum);
-        
-        // Add variations
-        const tens = Math.floor(predictedNum / 10);
-        const units = predictedNum % 10;
-        
-        predictionModels.patternBased.numbers.push(`${units}${tens}`); // Reversed
-        
-        // Add numbers with +1/-1 variations
-        const variations = [
-          (predictedNum + 1) % 100,
-          (predictedNum + 10) % 100,
-          (predictedNum + 11) % 100,
-          (predictedNum + 9) % 100,
-          (predictedNum - 1 + 100) % 100,
-          (predictedNum - 10 + 100) % 100,
-          (predictedNum - 11 + 100) % 100,
-          (predictedNum - 9 + 100) % 100
-        ];
-        
-        variations.forEach(var_num => {
-          const formattedVar = var_num < 10 ? `0${var_num}` : `${var_num}`;
-          if (!predictionModels.patternBased.numbers.includes(formattedVar)) {
-            predictionModels.patternBased.numbers.push(formattedVar);
-          }
-        });
-      }
-      
-      // Display the prediction models
-      Object.keys(predictionModels).forEach(modelKey => {
-        const model = predictionModels[modelKey];
-        
-        // Skip models with no numbers
-        if (model.numbers.length === 0) return;
-        
-        // Create a section for this model
-        const modelSection = document.createElement('div');
-        modelSection.className = 'mb-4';
-        
-        const modelTitle = document.createElement('h5');
-        modelTitle.className = 'font-medium mb-2';
-        modelTitle.textContent = model.title;
-        modelSection.appendChild(modelTitle);
-        
-        // Create a container for the numbers
-        const numbersContainer = document.createElement('div');
-        numbersContainer.className = 'flex flex-wrap gap-2';
-        
-        // Add the predicted numbers
-        model.numbers.slice(0, 10).forEach(num => {
-          const numElement = document.createElement('div');
-          
-          // Determine the prominence level based on frequency or other factors
-          let prominenceClass = 'prominent-number-low';
-          
-          // Check if this number contains high-frequency digits
-          if (topDigits.slice(0, 2).includes(num[0]) && topDigits.slice(0, 2).includes(num[1])) {
-            prominenceClass = 'prominent-number-high';
-          } else if (topDigits.slice(0, 2).includes(num[0]) || topDigits.slice(0, 2).includes(num[1])) {
-            prominenceClass = 'prominent-number-medium';
-          }
-          
-          // If this is from the predefined model, make it high prominence
-          if (modelKey === 'predefined') {
-            prominenceClass = 'prominent-number-high';
-          }
-          
-          numElement.className = `prominent-number ${prominenceClass}`;
-          numElement.textContent = num;
-          numbersContainer.appendChild(numElement);
-        });
-        
-        modelSection.appendChild(numbersContainer);
-        prominentNumbers.appendChild(modelSection);
-      });
-      
-      // Add a legend for the colors
-      const legend = document.createElement('div');
-      legend.className = 'mt-4 pt-4 border-t';
-      legend.innerHTML = `
-        <p class="mb-2 font-medium">คำอธิบายสี:</p>
-        <div class="flex flex-wrap gap-4">
-          <div class="flex items-center">
-            <div class="w-4 h-4 bg-red-100 border border-red-500 mr-2"></div>
-            <span class="text-sm">= โอกาสสูง</span>
-          </div>
-          <div class="flex items-center">
-            <div class="w-4 h-4 bg-yellow-100 border border-yellow-500 mr-2"></div>
-            <span class="text-sm">= โอกาสปานกลาง</span>
-          </div>
-          <div class="flex items-center">
-            <div class="w-4 h-4 bg-blue-100 border border-blue-500 mr-2"></div>
-            <span class="text-sm">= โอกาสต่ำ</span>
-          </div>
-        </div>
-      `;
-      prominentNumbers.appendChild(legend);
-      
-      // Display the top 3 single digits
-      const top3Digits = sortedDigits.slice(0, 3);
-      
-      // Create single digit elements
-      top3Digits.forEach((digit, index) => {
-        const digitElement = document.createElement('div');
-        digitElement.className = `single-digit single-digit-${index + 1}`;
-        digitElement.textContent = digit;
-        
-        // Add frequency info
-        const frequencyBadge = document.createElement('div');
-        frequencyBadge.className = 'text-xs bg-white px-2 py-1 rounded-full absolute -top-2 -right-2 border';
-        frequencyBadge.textContent = `${digitFrequency[digit]}x`;
-        digitElement.style.position = 'relative';
-        digitElement.appendChild(frequencyBadge);
-        
-        prominentSingleDigits.appendChild(digitElement);
-      });
-      
-      // Add explanation
-      const explanation = document.createElement('div');
-      explanation.className = 'mt-4 text-sm text-gray-600';
-      explanation.innerHTML = `
-        <p>เลขเด่นหลักเดียว 3 อันดับแรก คือ ${top3Digits.join(', ')} โดยพิจารณาจากความถี่ที่ปรากฏในผลย้อนหลัง</p>
-        <p class="mt-1">สามารถนำไปใช้ในการเลือกเลข 2 หลักที่มีตัวเลขเหล่านี้</p>
-      `;
-      prominentSingleDigits.appendChild(explanation);
-    });
-
     // Number Selection System
     // Set selection
     document.querySelectorAll('.set-selector').forEach(button => {
@@ -1369,22 +1316,3 @@
       } else {
         filteredNumbersDiv.textContent = filteredNumbers.join(', ');
       }
-    });
-
-    // Initialize empty grids
-    document.addEventListener('DOMContentLoaded', function() {
-      const sets = ['A', 'B', 'C', 'D'];
-      sets.forEach(set => {
-        const grid = document.getElementById(`grid-${set}`);
-        grid.innerHTML = '';
-        for (let i = 0; i < 25; i++) {
-          const box = document.createElement('div');
-          box.className = 'number-box';
-          box.textContent = '-';
-          grid.appendChild(box);
-        }
-      });
-    });
-  </script>
-</body>
-</html>
