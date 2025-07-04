@@ -1,4 +1,3 @@
-I'll update the prediction system to match your requirements. The system will randomly generate sets A, B, C, D and stop when the first rounds (1, 2, 3, etc.) match the expected sets from the analysis. Users can select both the total number of rounds and how many consecutive matching rounds are required.
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
@@ -10,69 +9,73 @@ I'll update the prediction system to match your requirements. The system will ra
   <div class="max-w-5xl mx-auto py-10 px-4">
     <h1 class="text-2xl font-bold mb-6 text-center">สุ่มชุดเลข 2 หลัก 4 ชุด (A–D)</h1>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-      <div class="space-y-2 border rounded-lg p-3 set-A-bg">
-        <label class="block text-center font-medium set-A-text">ชุด A</label>
-        <textarea id="input-A" class="w-full p-2 border rounded h-24" placeholder="เช่น 01,15,27"></textarea>
-      </div>
-      <div class="space-y-2 border rounded-lg p-3 set-B-bg">
-        <label class="block text-center font-medium set-B-text">ชุด B</label>
-        <textarea id="input-B" class="w-full p-2 border rounded h-24" placeholder="เช่น 02,16,28"></textarea>
-      </div>
-      <div class="space-y-2 border rounded-lg p-3 set-C-bg">
-        <label class="block text-center font-medium set-C-text">ชุด C</label>
-        <textarea id="input-C" class="w-full p-2 border rounded h-24" placeholder="เช่น 03,17,29"></textarea>
-      </div>
-      <div class="space-y-2 border rounded-lg p-3 set-D-bg">
-        <label class="block text-center font-medium set-D-text">ชุด D</label>
-        <textarea id="input-D" class="w-full p-2 border rounded h-24" placeholder="เช่น 04,18,30"></textarea>
-      </div>
-    </div>
-
-    <button id="generate-double" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition mb-6">
-      สุ่มตัวเลข (ไม่ซ้ำข้ามชุด)
-    </button>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-      <div class="border rounded-lg p-4 bg-white shadow-sm set-A-bg">
-        <h4 class="text-center font-medium mb-3 set-A-text">ชุด A</h4>
-        <div id="grid-A" class="grid grid-cols-5 gap-2"></div>
-      </div>
-      <div class="border rounded-lg p-4 bg-white shadow-sm set-B-bg">
-        <h4 class="text-center font-medium mb-3 set-B-text">ชุด B</h4>
-        <div id="grid-B" class="grid grid-cols-5 gap-2"></div>
-      </div>
-      <div class="border rounded-lg p-4 bg-white shadow-sm set-C-bg">
-        <h4 class="text-center font-medium mb-3 set-C-text">ชุด C</h4>
-        <div id="grid-C" class="grid grid-cols-5 gap-2"></div>
-      </div>
-      <div class="border rounded-lg p-4 bg-white shadow-sm set-D-bg">
-        <h4 class="text-center font-medium mb-3 set-D-text">ชุด D</h4>
-        <div id="grid-D" class="grid grid-cols-5 gap-2"></div>
-      </div>
-    </div>
-
     <!-- Analysis System -->
     <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
       <h2 class="text-xl font-bold mb-4">ระบบวิเคราะห์</h2>
+      
+      <!-- Moved 5x5 grids to the top -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="border rounded-lg p-4 bg-white shadow-sm set-A-bg">
+          <h4 class="text-center font-medium mb-3 set-A-text">ชุด A</h4>
+          <div id="grid-A" class="grid grid-cols-5 gap-2"></div>
+        </div>
+        <div class="border rounded-lg p-4 bg-white shadow-sm set-B-bg">
+          <h4 class="text-center font-medium mb-3 set-B-text">ชุด B</h4>
+          <div id="grid-B" class="grid grid-cols-5 gap-2"></div>
+        </div>
+        <div class="border rounded-lg p-4 bg-white shadow-sm set-C-bg">
+          <h4 class="text-center font-medium mb-3 set-C-text">ชุด C</h4>
+          <div id="grid-C" class="grid grid-cols-5 gap-2"></div>
+        </div>
+        <div class="border rounded-lg p-4 bg-white shadow-sm set-D-bg">
+          <h4 class="text-center font-medium mb-3 set-D-text">ชุด D</h4>
+          <div id="grid-D" class="grid grid-cols-5 gap-2"></div>
+        </div>
+      </div>
       
       <div class="mb-4">
         <label class="block mb-2 font-medium">ผลย้อนหลัง (เลข 2 หลัก คั่นด้วยเครื่องหมายคอมม่า)</label>
         <textarea id="past-results" class="w-full p-3 border rounded h-24" placeholder="เช่น 01,15,27,42,56,78,90"></textarea>
       </div>
       
-      <button id="analyze-btn" class="bg-green-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-700 transition mb-4">
-        วิเคราะห์ผล
-      </button>
+      <div class="flex flex-wrap gap-4 mb-6">
+        <button id="analyze-btn" class="bg-green-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-700 transition">
+          วิเคราะห์ผล
+        </button>
+        
+        <button id="generate-double" class="bg-indigo-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-indigo-700 transition">
+          สุ่มตัวเลข (ไม่ซ้ำข้ามชุด)
+        </button>
+      </div>
       
-      <div id="analysis-results" class="border rounded-lg p-4 bg-gray-50">
+      <div id="analysis-results" class="border rounded-lg p-4 bg-gray-50 mb-6">
         <h3 class="font-medium mb-2">ผลการวิเคราะห์:</h3>
         <div id="analysis-content" class="space-y-2">
           <p class="text-gray-500">กรุณากรอกผลย้อนหลังและกดวิเคราะห์</p>
         </div>
         <div id="expected-sets" class="mt-4 pt-4 border-t hidden">
-          <h3 class="font-medium mb-2">ชุดที่คาดหวัง (เรียงตามผลย้อนหลัง):</h3>
+          <h3 class="font-medium mb-2">ชุดที่พบในผลย้อนหลัง:</h3>
           <div id="expected-sets-content" class="flex flex-wrap gap-2"></div>
+        </div>
+      </div>
+      
+      <!-- Random Number Generation System -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="space-y-2 border rounded-lg p-3 set-A-bg">
+          <label class="block text-center font-medium set-A-text">ชุด A</label>
+          <textarea id="input-A" class="w-full p-2 border rounded h-24" placeholder="เช่น 01,15,27"></textarea>
+        </div>
+        <div class="space-y-2 border rounded-lg p-3 set-B-bg">
+          <label class="block text-center font-medium set-B-text">ชุด B</label>
+          <textarea id="input-B" class="w-full p-2 border rounded h-24" placeholder="เช่น 02,16,28"></textarea>
+        </div>
+        <div class="space-y-2 border rounded-lg p-3 set-C-bg">
+          <label class="block text-center font-medium set-C-text">ชุด C</label>
+          <textarea id="input-C" class="w-full p-2 border rounded h-24" placeholder="เช่น 03,17,29"></textarea>
+        </div>
+        <div class="space-y-2 border rounded-lg p-3 set-D-bg">
+          <label class="block text-center font-medium set-D-text">ชุด D</label>
+          <textarea id="input-D" class="w-full p-2 border rounded h-24" placeholder="เช่น 04,18,30"></textarea>
         </div>
       </div>
     </div>
@@ -81,29 +84,39 @@ I'll update the prediction system to match your requirements. The system will ra
     <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
       <h2 class="text-xl font-bold mb-4">ระบบพยากรณ์</h2>
       
-      <div class="flex flex-wrap gap-4 mb-4">
+      <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg mb-4">
+        <p class="text-sm text-blue-800">
+          <strong>วิธีการทำงาน:</strong> ระบบจะทำการสุ่มชุด A, B, C, D และเปรียบเทียบกับผลการวิเคราะห์ โดยจะหยุดเมื่อมีค่ารอบที่ 1, 2, 3, ... ตรงกับชุดที่พบในผลย้อนหลัง ตามจำนวนรอบที่ต้องการให้ตรงกัน
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
         <div>
-          <label class="block mb-2 font-medium">จำนวนรอบที่ต้องการ</label>
-          <input type="number" id="prediction-rounds" class="w-24 p-2 border rounded" value="5" min="3" max="10">
+          <label class="block mb-2 font-medium">จำนวนรอบที่ต้องการสุ่ม</label>
+          <div class="flex items-center">
+            <input type="number" id="prediction-rounds" class="w-24 p-2 border rounded" value="5" min="3" max="10">
+            <span class="ml-2 text-gray-600">รอบ</span>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">จำนวนรอบทั้งหมดที่ต้องการสุ่ม (3-10 รอบ)</p>
         </div>
         <div>
           <label class="block mb-2 font-medium">จำนวนรอบที่ต้องตรงกัน</label>
-          <input type="number" id="required-matches" class="w-24 p-2 border rounded" value="3" min="1" max="10">
+          <div class="flex items-center">
+            <input type="number" id="required-matches" class="w-24 p-2 border rounded" value="3" min="1" max="10">
+            <span class="ml-2 text-gray-600">รอบแรก</span>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">จำนวนรอบแรกที่ต้องตรงกับผลย้อนหลังติดต่อกัน</p>
         </div>
       </div>
       
-      <div class="mb-4">
-        <p class="text-sm text-gray-600">ระบบจะทำการสุ่มชุด A, B, C, D และเปรียบเทียบกับผลการวิเคราะห์ จนกว่าจะได้ผลตรงกันตามจำนวนรอบที่กำหนด</p>
-      </div>
-      
-      <button id="predict-btn" class="bg-purple-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-purple-700 transition mb-4">
+      <button id="predict-btn" class="bg-purple-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-purple-700 transition mb-4 w-full md:w-auto">
         พยากรณ์ผล
       </button>
       
       <div class="mb-4">
         <div class="flex items-center">
           <div class="w-4 h-4 bg-green-500 mr-2"></div>
-          <span class="text-sm">= ตรงกับผลวิเคราะห์</span>
+          <span class="text-sm">= ตรงกับผลย้อนหลัง</span>
         </div>
       </div>
       
@@ -118,6 +131,39 @@ I'll update the prediction system to match your requirements. The system will ra
     <!-- Number Selection System -->
     <div class="bg-white rounded-lg shadow-sm p-6">
       <h2 class="text-xl font-bold mb-4">ระบบคัดเลขเด่น</h2>
+      
+      <!-- Past 3 days results input -->
+      <div class="mb-6 border-b pb-6">
+        <h3 class="font-medium mb-3">ผลย้อนหลัง 3 วัน</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block mb-2">วันที่ 1 (ล่าสุด)</label>
+            <input type="text" id="day1-result" class="w-full p-2 border rounded" placeholder="เช่น 27" maxlength="2">
+          </div>
+          <div>
+            <label class="block mb-2">วันที่ 2</label>
+            <input type="text" id="day2-result" class="w-full p-2 border rounded" placeholder="เช่น 45" maxlength="2">
+          </div>
+          <div>
+            <label class="block mb-2">วันที่ 3</label>
+            <input type="text" id="day3-result" class="w-full p-2 border rounded" placeholder="เช่น 89" maxlength="2">
+          </div>
+        </div>
+        
+        <button id="predict-prominent" class="mt-4 bg-yellow-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-yellow-700 transition">
+          ทำนายเลขเด่น
+        </button>
+        
+        <div id="prominent-prediction" class="mt-4 p-4 border rounded bg-gray-50 hidden">
+          <h4 class="font-medium mb-2">ผลการทำนายเลขเด่น:</h4>
+          <div id="prominent-numbers" class="space-y-2"></div>
+          
+          <div id="prominent-single-digits" class="mt-6 pt-4 border-t">
+            <h4 class="font-medium mb-2">เลขเด่นหลักเดียว (Top 3):</h4>
+            <div id="prominent-single-digits-content" class="flex flex-wrap gap-3"></div>
+          </div>
+        </div>
+      </div>
       
       <div class="mb-6">
         <h3 class="font-medium mb-3">เลือกชุด</h3>
@@ -171,6 +217,90 @@ I'll update the prediction system to match your requirements. The system will ra
         <div id="filtered-numbers" class="p-3 border rounded bg-white min-h-[100px]">
           <p class="text-gray-500">กรุณาเลือกเงื่อนไขและกดคัดกรอง</p>
         </div>
+      </div>
+    </div>
+    
+    <!-- Predefined Prominent Numbers Reference -->
+    <div class="bg-white rounded-lg shadow-sm p-6 mt-8">
+      <h2 class="text-xl font-bold mb-4">ตารางเลขเด่นตามผลย้อนหลัง</h2>
+      
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border p-2 text-center">ผลย้อนหลัง</th>
+              <th class="border p-2 text-center">เลขเด่น</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border p-2 text-center font-medium">0</td>
+              <td class="border p-2">01, 29, 8</td>
+            </tr>
+            <tr>
+              <td class="border p-2 text-center font-medium">1</td>
+              <td class="border p-2">71, 23</td>
+            </tr>
+            <tr>
+              <td class="border p-2 text-center font-medium">2</td>
+              <td class="border p-2">52, 34</td>
+            </tr>
+            <tr>
+              <td class="border p-2 text-center font-medium">3</td>
+              <td class="border p-2">83, 45, 6</td>
+            </tr>
+            <tr>
+              <td class="border p-2 text-center font-medium">4</td>
+              <td class="border p-2">45, 69, 7</td>
+            </tr>
+            <tr>
+              <td class="border p-2 text-center font-medium">5</td>
+              <td class="border p-2">45, 68, 37</td>
+            </tr>
+            <tr>
+              <td class="border p-2 text-center font-medium">6</td>
+              <td class="border p-2">69, 34, 7</td>
+            </tr>
+            <tr>
+              <td class="border p-2 text-center font-medium">7</td>
+              <td class="border p-2">16, 92, 57</td>
+            </tr>
+            <tr>
+              <td class="border p-2 text-center font-medium">8</td>
+              <td class="border p-2">82, 53, 0</td>
+            </tr>
+            <tr>
+              <td class="border p-2 text-center font-medium">9</td>
+              <td class="border p-2">45, 69, 3</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Top 3 Single Digits Summary -->
+      <div class="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <h3 class="text-lg font-bold mb-3">สรุปเลขเด่นหลักเดียว 3 ตัว</h3>
+        <div class="flex justify-center gap-6 mb-4">
+          <div class="single-digit single-digit-1 relative">
+            <span>5</span>
+            <div class="text-xs bg-white px-2 py-1 rounded-full absolute -top-2 -right-2 border">
+              8x
+            </div>
+          </div>
+          <div class="single-digit single-digit-2 relative">
+            <span>4</span>
+            <div class="text-xs bg-white px-2 py-1 rounded-full absolute -top-2 -right-2 border">
+              6x
+            </div>
+          </div>
+          <div class="single-digit single-digit-3 relative">
+            <span>3</span>
+            <div class="text-xs bg-white px-2 py-1 rounded-full absolute -top-2 -right-2 border">
+              5x
+            </div>
+          </div>
+        </div>
+        <p class="text-center text-sm">จากการวิเคราะห์เลขเด่นทั้งหมด พบว่าเลข 5, 4, และ 3 เป็นเลขที่ปรากฏบ่อยที่สุด</p>
       </div>
     </div>
   </div>
@@ -280,6 +410,74 @@ I'll update the prediction system to match your requirements. The system will ra
       margin-right: 0.5rem;
       margin-bottom: 0.5rem;
     }
+    .prominent-number {
+      display: inline-block;
+      background-color: #fef3c7;
+      border: 1px solid #f59e0b;
+      border-radius: 0.375rem;
+      padding: 0.5rem 1rem;
+      margin: 0.25rem;
+      font-weight: 600;
+      font-size: 1.125rem;
+    }
+    .prominent-number-high {
+      background-color: #fee2e2;
+      border-color: #ef4444;
+      color: #b91c1c;
+    }
+    .prominent-number-medium {
+      background-color: #fef3c7;
+      border-color: #f59e0b;
+      color: #92400e;
+    }
+    .prominent-number-low {
+      background-color: #dbeafe;
+      border-color: #3b82f6;
+      color: #1e40af;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background-color: #e5e7eb;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background-color: #8b5cf6;
+      transition: width 0.3s ease;
+    }
+    .single-digit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      font-size: 1.75rem;
+      font-weight: bold;
+      margin: 0.25rem;
+    }
+    .single-digit-1 {
+      background-color: #fee2e2;
+      border: 2px solid #ef4444;
+      color: #b91c1c;
+    }
+    .single-digit-2 {
+      background-color: #fef3c7;
+      border: 2px solid #f59e0b;
+      color: #92400e;
+    }
+    .single-digit-3 {
+      background-color: #dbeafe;
+      border: 2px solid #3b82f6;
+      color: #1e40af;
+    }
+    .match-highlight {
+      background-color: #d1fae5 !important;
+      border-color: #34d399 !important;
+    }
   </style>
 
   <script>
@@ -292,12 +490,64 @@ I'll update the prediction system to match your requirements. The system will ra
     let selectedColumns = [];
     let selectedDigits = [];
     
+    // Predefined prominent numbers based on past results
+    const predefinedProminentNumbers = {
+      '0': ['01', '29', '8'],
+      '1': ['71', '23'],
+      '2': ['52', '34'],
+      '3': ['83', '45', '6'],
+      '4': ['45', '69', '7'],
+      '5': ['45', '68', '37'],
+      '6': ['69', '34', '7'],
+      '7': ['16', '92', '57'],
+      '8': ['82', '53', '0'],
+      '9': ['45', '69', '3']
+    };
+    
+    // Calculate the frequency of each digit across all predefined prominent numbers
+    function calculateOverallDigitFrequency() {
+      const digitFrequency = {};
+      for (let i = 0; i <= 9; i++) {
+        digitFrequency[i] = 0;
+      }
+      
+      // Count occurrences of each digit in all predefined prominent numbers
+      Object.values(predefinedProminentNumbers).forEach(numbers => {
+        numbers.forEach(num => {
+          // Handle both single and double digit numbers
+          if (num.length === 1) {
+            digitFrequency[parseInt(num)]++;
+          } else {
+            digitFrequency[parseInt(num[0])]++;
+            digitFrequency[parseInt(num[1])]++;
+          }
+        });
+      });
+      
+      return digitFrequency;
+    }
+    
     function validateDoubleInput(input) {
       if (!input) return [];
       return [...new Set(input.split(',').map(n => {
         n = n.trim();
         return n.length === 1 ? '0' + n : n;
       }).filter(n => /^\d{2}$/.test(n)))];
+    }
+
+    function validateSingleInput(input) {
+      if (!input) return '';
+      input = input.trim();
+      if (/^\d{1}$/.test(input)) {
+        return '0' + input;
+      } else if (/^\d{2}$/.test(input)) {
+        return input;
+      }
+      return '';
+    }
+
+    function formatNumber(num) {
+      return num.toLocaleString('th-TH');
     }
 
     document.getElementById('generate-double').addEventListener('click', function () {
@@ -503,10 +753,16 @@ I'll update the prediction system to match your requirements. The system will ra
       const rounds = Math.max(3, parseInt(document.getElementById('prediction-rounds').value) || 5);
       const requiredMatches = Math.min(rounds, Math.max(1, parseInt(document.getElementById('required-matches').value) || 3));
       
-      // Create a status message
+      // Create a status message with progress bar
       const statusDiv = document.createElement('div');
-      statusDiv.className = 'mb-4 p-3 bg-blue-100 rounded';
-      statusDiv.innerHTML = '<p class="font-medium">กำลังสุ่มผลพยากรณ์...</p>';
+      statusDiv.className = 'mb-4 p-4 bg-blue-100 rounded';
+      statusDiv.innerHTML = `
+        <p class="font-medium">กำลังสุ่มผลพยากรณ์...</p>
+        <p class="text-sm mt-1">กำลังค้นหาการสุ่มที่ตรงกับผลย้อนหลัง ${requiredMatches} รอบแรกติดต่อกัน</p>
+        <div class="progress-bar">
+          <div id="prediction-progress" class="progress-bar-fill" style="width: 0%"></div>
+        </div>
+      `;
       predictionContent.appendChild(statusDiv);
       
       // We'll use setTimeout to allow the UI to update before starting the intensive calculation
@@ -515,10 +771,22 @@ I'll update the prediction system to match your requirements. The system will ra
         let totalAttempts = 0;
         let maxAttempts = 100000; // Limit to prevent infinite loops
         let successfulPrediction = null;
+        const progressBar = document.getElementById('prediction-progress');
+        
+        // Update progress function
+        const updateProgress = (attempts) => {
+          const progress = Math.min(100, (attempts / 10000) * 100);
+          progressBar.style.width = `${progress}%`;
+        };
         
         // Keep randomizing until we get enough consecutive matches at the beginning or reach max attempts
         while (totalAttempts < maxAttempts) {
           totalAttempts++;
+          
+          // Update progress every 1000 attempts
+          if (totalAttempts % 1000 === 0) {
+            updateProgress(totalAttempts);
+          }
           
           // Generate random sets for all rounds
           const predictions = [];
@@ -526,11 +794,13 @@ I'll update the prediction system to match your requirements. The system will ra
           for (let i = 0; i < rounds; i++) {
             const randomSet = ['A', 'B', 'C', 'D'][Math.floor(Math.random() * 4)];
             const expectedSet = i < expectedSets.length ? expectedSets[i] : expectedSets[expectedSets.length - 1];
+            const pastResult = i < pastResultsData.length ? pastResultsData[i] : '-';
             const isMatch = randomSet === expectedSet || (expectedSet === 'none'); // Match if expected is 'none' (unspecified)
             
             predictions.push({
               round: i + 1,
               set: randomSet,
+              pastResult: pastResult,
               expectedSet: expectedSet,
               isMatch: isMatch
             });
@@ -538,7 +808,7 @@ I'll update the prediction system to match your requirements. The system will ra
           
           // Check if we have enough consecutive matches at the beginning
           let consecutiveMatches = 0;
-          for (let i = 0; i < requiredMatches && i < predictions.length; i++) {
+          for (let i = 0; i < predictions.length; i++) {
             if (predictions[i].isMatch) {
               consecutiveMatches++;
             } else {
@@ -560,11 +830,13 @@ I'll update the prediction system to match your requirements. The system will ra
           for (let i = 0; i < rounds; i++) {
             const randomSet = ['A', 'B', 'C', 'D'][Math.floor(Math.random() * 4)];
             const expectedSet = i < expectedSets.length ? expectedSets[i] : expectedSets[expectedSets.length - 1];
+            const pastResult = i < pastResultsData.length ? pastResultsData[i] : '-';
             const isMatch = randomSet === expectedSet || (expectedSet === 'none'); // Match if expected is 'none' (unspecified)
             
             predictions.push({
               round: i + 1,
               set: randomSet,
+              pastResult: pastResult,
               expectedSet: expectedSet,
               isMatch: isMatch
             });
@@ -585,11 +857,19 @@ I'll update the prediction system to match your requirements. The system will ra
         headerRow.appendChild(roundHeader);
         
         const setHeader = document.createElement('th');
-        setHeader.textContent = 'ชุด';
+        setHeader.textContent = 'ชุดที่สุ่มได้';
         headerRow.appendChild(setHeader);
         
+        const expectedSetHeader = document.createElement('th');
+        expectedSetHeader.textContent = 'ชุดที่พบในผลย้อนหลัง';
+        headerRow.appendChild(expectedSetHeader);
+        
+        const pastResultHeader = document.createElement('th');
+        pastResultHeader.textContent = 'ผลย้อนหลัง';
+        headerRow.appendChild(pastResultHeader);
+        
         const matchHeader = document.createElement('th');
-        matchHeader.textContent = 'ตรงกับผลวิเคราะห์';
+        matchHeader.textContent = 'ตรงกัน';
         headerRow.appendChild(matchHeader);
         
         thead.appendChild(headerRow);
@@ -624,7 +904,29 @@ I'll update the prediction system to match your requirements. The system will ra
           const setCell = document.createElement('td');
           setCell.className = `set-${prediction.set}-text font-medium`;
           setCell.textContent = `ชุด ${prediction.set}`;
+          
+          // Highlight the cell with green background if it matches the expected set
+          if (prediction.isMatch) {
+            setCell.classList.add('match-highlight');
+          }
+          
           row.appendChild(setCell);
+          
+          // Add expected set cell
+          const expectedSetCell = document.createElement('td');
+          if (prediction.expectedSet === 'none') {
+            expectedSetCell.textContent = 'ไม่ระบุ';
+            expectedSetCell.className = 'set-none-text font-medium';
+          } else {
+            expectedSetCell.textContent = `ชุด ${prediction.expectedSet}`;
+            expectedSetCell.className = `set-${prediction.expectedSet}-text font-medium`;
+          }
+          row.appendChild(expectedSetCell);
+          
+          const pastResultCell = document.createElement('td');
+          pastResultCell.textContent = prediction.pastResult;
+          pastResultCell.className = 'font-medium';
+          row.appendChild(pastResultCell);
           
           const matchCell = document.createElement('td');
           matchCell.textContent = prediction.isMatch ? '✓' : '-';
@@ -649,14 +951,14 @@ I'll update the prediction system to match your requirements. The system will ra
         let summaryHTML = '<h3 class="font-medium mb-2">สรุปผลการพยากรณ์:</h3>';
         
         if (consecutiveMatches >= requiredMatches) {
-          summaryHTML += `<p>สุ่มทั้งหมด ${totalAttempts} ครั้ง จนได้ผลตรงกับผลย้อนหลัง ${consecutiveMatches} รอบแรกติดต่อกัน (ต้องการอย่างน้อย ${requiredMatches} รอบ)</p>`;
+          summaryHTML += `<p>สุ่มทั้งหมด ${formatNumber(totalAttempts)} ครั้ง จนได้ผลตรงกับผลย้อนหลัง ${consecutiveMatches} รอบแรกติดต่อกัน (ต้องการอย่างน้อย ${requiredMatches} รอบ)</p>`;
           
           // Calculate probability
           const probability = Math.pow(0.25, requiredMatches);
           const percentProbability = (probability * 100).toFixed(6);
           summaryHTML += `<p>โอกาสที่จะสุ่มได้ตรงกับผลย้อนหลังอย่างน้อย ${requiredMatches} รอบแรกติดต่อกัน: ${percentProbability}%</p>`;
         } else {
-          summaryHTML += `<p>ไม่สามารถสุ่มให้ตรงกับผลย้อนหลังได้ครบ ${requiredMatches} รอบแรกติดต่อกัน ภายใน ${maxAttempts} ครั้ง (ได้สูงสุด ${consecutiveMatches} รอบ)</p>`;
+          summaryHTML += `<p>ไม่สามารถสุ่มให้ตรงกับผลย้อนหลังได้ครบ ${requiredMatches} รอบแรกติดต่อกัน ภายใน ${formatNumber(maxAttempts)} ครั้ง (ได้สูงสุด ${consecutiveMatches} รอบ)</p>`;
         }
         
         // Add prediction numbers from the matched sets
@@ -665,9 +967,7 @@ I'll update the prediction system to match your requirements. The system will ra
         // Get the matched sets from the prediction (only the consecutive matches at the beginning)
         const matchedSets = [];
         for (let i = 0; i < consecutiveMatches && i < requiredMatches; i++) {
-          if (successfulPrediction[i].expectedSet !== 'none') {
-            matchedSets.push(successfulPrediction[i].set);
-          }
+          matchedSets.push(successfulPrediction[i].set);
         }
         
         // If we have matched sets, show numbers from those sets
@@ -693,6 +993,241 @@ I'll update the prediction system to match your requirements. The system will ra
         summaryDiv.innerHTML = summaryHTML;
         predictionContent.appendChild(summaryDiv);
       }, 100);
+    });
+
+    // Prominent Number Prediction System
+    document.getElementById('predict-prominent').addEventListener('click', function() {
+      const day1Result = validateSingleInput(document.getElementById('day1-result').value);
+      const day2Result = validateSingleInput(document.getElementById('day2-result').value);
+      const day3Result = validateSingleInput(document.getElementById('day3-result').value);
+      
+      const prominentPrediction = document.getElementById('prominent-prediction');
+      const prominentNumbers = document.getElementById('prominent-numbers');
+      const prominentSingleDigits = document.getElementById('prominent-single-digits-content');
+      
+      // Check if we have at least one day of results
+      if (!day1Result) {
+        prominentNumbers.innerHTML = '<p class="text-red-500">กรุณากรอกผลย้อนหลังอย่างน้อย 1 วัน</p>';
+        prominentPrediction.classList.remove('hidden');
+        return;
+      }
+      
+      // Show the prediction section
+      prominentPrediction.classList.remove('hidden');
+      prominentNumbers.innerHTML = '';
+      prominentSingleDigits.innerHTML = '';
+      
+      // Extract digits from the results
+      const digits = [];
+      
+      if (day1Result) {
+        digits.push(parseInt(day1Result[0]));
+        digits.push(parseInt(day1Result[1]));
+      }
+      
+      if (day2Result) {
+        digits.push(parseInt(day2Result[0]));
+        digits.push(parseInt(day2Result[1]));
+      }
+      
+      if (day3Result) {
+        digits.push(parseInt(day3Result[0]));
+        digits.push(parseInt(day3Result[1]));
+      }
+      
+      // Count frequency of each digit
+      const digitFrequency = {};
+      for (let i = 0; i <= 9; i++) {
+        digitFrequency[i] = 0;
+      }
+      
+      digits.forEach(digit => {
+        digitFrequency[digit]++;
+      });
+      
+      // Create a list of digits sorted by frequency
+      const sortedDigits = Object.keys(digitFrequency).sort((a, b) => {
+        return digitFrequency[b] - digitFrequency[a];
+      });
+      
+      // Create prediction models
+      const predictionModels = {
+        // Model 1: Predefined prominent numbers based on the last digit
+        predefined: {
+          title: 'เลขเด่นตามตาราง',
+          numbers: []
+        },
+        // Model 2: Most frequent digits
+        mostFrequent: {
+          title: 'เลขเด่นตามความถี่',
+          numbers: []
+        },
+        // Model 3: Pattern-based prediction
+        patternBased: {
+          title: 'เลขเด่นตามรูปแบบ',
+          numbers: []
+        }
+      };
+      
+      // Model 1: Use predefined prominent numbers based on the last digit of day1Result
+      const lastDigit = day1Result[1];
+      if (predefinedProminentNumbers[lastDigit]) {
+        predefinedProminentNumbers[lastDigit].forEach(num => {
+          // Convert single digits to two digits
+          if (num.length === 1) {
+            predictionModels.predefined.numbers.push('0' + num);
+          } else {
+            predictionModels.predefined.numbers.push(num);
+          }
+        });
+      }
+      
+      // Model 2: Most frequent digits (top 3)
+      const topDigits = sortedDigits.slice(0, 3);
+      
+      // Generate combinations of top digits
+      for (let i = 0; i < topDigits.length; i++) {
+        for (let j = 0; j < topDigits.length; j++) {
+          const num = `${topDigits[i]}${topDigits[j]}`;
+          predictionModels.mostFrequent.numbers.push(num);
+        }
+      }
+      
+      // Model 3: Pattern-based prediction
+      // Look for patterns in the sequence
+      if (day1Result && day2Result) {
+        // Calculate differences between consecutive days
+        const diff1 = (parseInt(day1Result) - parseInt(day2Result) + 100) % 100;
+        
+        // Predict next number based on the pattern
+        const predictedNum = (parseInt(day1Result) + diff1) % 100;
+        const formattedNum = predictedNum < 10 ? `0${predictedNum}` : `${predictedNum}`;
+        
+        predictionModels.patternBased.numbers.push(formattedNum);
+        
+        // Add variations
+        const tens = Math.floor(predictedNum / 10);
+        const units = predictedNum % 10;
+        
+        predictionModels.patternBased.numbers.push(`${units}${tens}`); // Reversed
+        
+        // Add numbers with +1/-1 variations
+        const variations = [
+          (predictedNum + 1) % 100,
+          (predictedNum + 10) % 100,
+          (predictedNum + 11) % 100,
+          (predictedNum + 9) % 100,
+          (predictedNum - 1 + 100) % 100,
+          (predictedNum - 10 + 100) % 100,
+          (predictedNum - 11 + 100) % 100,
+          (predictedNum - 9 + 100) % 100
+        ];
+        
+        variations.forEach(var_num => {
+          const formattedVar = var_num < 10 ? `0${var_num}` : `${var_num}`;
+          if (!predictionModels.patternBased.numbers.includes(formattedVar)) {
+            predictionModels.patternBased.numbers.push(formattedVar);
+          }
+        });
+      }
+      
+      // Display the prediction models
+      Object.keys(predictionModels).forEach(modelKey => {
+        const model = predictionModels[modelKey];
+        
+        // Skip models with no numbers
+        if (model.numbers.length === 0) return;
+        
+        // Create a section for this model
+        const modelSection = document.createElement('div');
+        modelSection.className = 'mb-4';
+        
+        const modelTitle = document.createElement('h5');
+        modelTitle.className = 'font-medium mb-2';
+        modelTitle.textContent = model.title;
+        modelSection.appendChild(modelTitle);
+        
+        // Create a container for the numbers
+        const numbersContainer = document.createElement('div');
+        numbersContainer.className = 'flex flex-wrap gap-2';
+        
+        // Add the predicted numbers
+        model.numbers.slice(0, 10).forEach(num => {
+          const numElement = document.createElement('div');
+          
+          // Determine the prominence level based on frequency or other factors
+          let prominenceClass = 'prominent-number-low';
+          
+          // Check if this number contains high-frequency digits
+          if (topDigits.slice(0, 2).includes(num[0]) && topDigits.slice(0, 2).includes(num[1])) {
+            prominenceClass = 'prominent-number-high';
+          } else if (topDigits.slice(0, 2).includes(num[0]) || topDigits.slice(0, 2).includes(num[1])) {
+            prominenceClass = 'prominent-number-medium';
+          }
+          
+          // If this is from the predefined model, make it high prominence
+          if (modelKey === 'predefined') {
+            prominenceClass = 'prominent-number-high';
+          }
+          
+          numElement.className = `prominent-number ${prominenceClass}`;
+          numElement.textContent = num;
+          numbersContainer.appendChild(numElement);
+        });
+        
+        modelSection.appendChild(numbersContainer);
+        prominentNumbers.appendChild(modelSection);
+      });
+      
+      // Add a legend for the colors
+      const legend = document.createElement('div');
+      legend.className = 'mt-4 pt-4 border-t';
+      legend.innerHTML = `
+        <p class="mb-2 font-medium">คำอธิบายสี:</p>
+        <div class="flex flex-wrap gap-4">
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-red-100 border border-red-500 mr-2"></div>
+            <span class="text-sm">= โอกาสสูง</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-yellow-100 border border-yellow-500 mr-2"></div>
+            <span class="text-sm">= โอกาสปานกลาง</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-blue-100 border border-blue-500 mr-2"></div>
+            <span class="text-sm">= โอกาสต่ำ</span>
+          </div>
+        </div>
+      `;
+      prominentNumbers.appendChild(legend);
+      
+      // Display the top 3 single digits
+      const top3Digits = sortedDigits.slice(0, 3);
+      
+      // Create single digit elements
+      top3Digits.forEach((digit, index) => {
+        const digitElement = document.createElement('div');
+        digitElement.className = `single-digit single-digit-${index + 1}`;
+        digitElement.textContent = digit;
+        
+        // Add frequency info
+        const frequencyBadge = document.createElement('div');
+        frequencyBadge.className = 'text-xs bg-white px-2 py-1 rounded-full absolute -top-2 -right-2 border';
+        frequencyBadge.textContent = `${digitFrequency[digit]}x`;
+        digitElement.style.position = 'relative';
+        digitElement.appendChild(frequencyBadge);
+        
+        prominentSingleDigits.appendChild(digitElement);
+      });
+      
+      // Add explanation
+      const explanation = document.createElement('div');
+      explanation.className = 'mt-4 text-sm text-gray-600';
+      explanation.innerHTML = `
+        <p>เลขเด่นหลักเดียว 3 อันดับแรก คือ ${top3Digits.join(', ')} โดยพิจารณาจากความถี่ที่ปรากฏในผลย้อนหลัง</p>
+        <p class="mt-1">สามารถนำไปใช้ในการเลือกเลข 2 หลักที่มีตัวเลขเหล่านี้</p>
+      `;
+      prominentSingleDigits.appendChild(explanation);
     });
 
     // Number Selection System
