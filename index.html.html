@@ -1,0 +1,251 @@
+I'll adjust the single digit system so that each table has exactly 2 non-repeating digits when randomized, and update the result verification system to compare with tables a, b, c, and d. Let me create that for you.
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบสุ่มตัวเลข</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .number-box {
+            transition: all 0.3s ease;
+        }
+        .number-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .tab-active {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .grid-5x5 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+        }
+        .selected {
+            background-color: #c7d2fe;
+            border-color: #4f46e5;
+            font-weight: bold;
+        }
+        .matched {
+            background-color: #bbf7d0;
+            border-color: #16a34a;
+        }
+        
+        /* สีสำหรับแต่ละชุด */
+        .set-A-bg {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+        }
+        .set-A-text {
+            color: #1e40af;
+        }
+        
+        .set-B-bg {
+            background-color: #fef3c7;
+            border-color: #f59e0b;
+        }
+        .set-B-text {
+            color: #92400e;
+        }
+        
+        .set-C-bg {
+            background-color: #dcfce7;
+            border-color: #22c55e;
+        }
+        .set-C-text {
+            color: #166534;
+        }
+        
+        .set-D-bg {
+            background-color: #fae8ff;
+            border-color: #d946ef;
+        }
+        .set-D-text {
+            color: #86198f;
+        }
+        
+        .set-a-bg {
+            background-color: #e0f2fe;
+            border-color: #0ea5e9;
+        }
+        .set-a-text {
+            color: #0369a1;
+        }
+        
+        .set-b-bg {
+            background-color: #fef9c3;
+            border-color: #eab308;
+        }
+        .set-b-text {
+            color: #854d0e;
+        }
+        
+        .set-c-bg {
+            background-color: #d1fae5;
+            border-color: #10b981;
+        }
+        .set-c-text {
+            color: #065f46;
+        }
+        
+        .set-d-bg {
+            background-color: #f3e8ff;
+            border-color: #a855f7;
+        }
+        .set-d-text {
+            color: #7e22ce;
+        }
+        
+        .set-e-bg {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+        }
+        .set-e-text {
+            color: #b91c1c;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #4f46e5;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .match-cell {
+            background-color: #bbf7d0;
+            color: #166534;
+            font-weight: 500;
+        }
+        
+        .digit-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .digit-btn.active {
+            background-color: #4f46e5;
+            color: white;
+            transform: scale(0.95);
+        }
+        
+        .column-btn.active {
+            background-color: #4f46e5;
+            color: white;
+        }
+        
+        .set-btn.active {
+            transform: scale(0.98);
+            box-shadow: 0 0 0 2px white, 0 0 0 4px currentColor;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="p-4 md:p-6 bg-indigo-600 text-white">
+            <h1 class="text-2xl md:text-3xl font-bold text-center">ระบบสุ่มตัวเลข</h1>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="flex border-b">
+            <button id="tab-single" class="tab-active px-4 py-3 font-medium flex-1 text-center">ชุดตัวเลขเดียว (a-d)</button>
+            <button id="tab-double" class="px-4 py-3 font-medium flex-1 text-center">ชุดเลข 2 หลัก (A-D)</button>
+        </div>
+
+        <!-- Single Digit Section -->
+        <div id="single-section" class="p-4 md:p-6">
+            <div class="mb-6">
+                <h2 class="text-xl font-semibold mb-4">สุ่มตัวเลขเดี่ยว 4 ชุด (a, b, c, d)</h2>
+                <p class="text-gray-600 mb-4">แต่ละชุดมีเลขจำนวน 2 ตัว (0-9) แบบไม่ซ้ำกันในแต่ละชุด</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="space-y-2 border rounded-lg p-3 set-a-bg">
+                        <label class="block text-center font-medium set-a-text">ชุด a</label>
+                        <div class="text-center text-sm text-gray-500 mb-2">กรอกตัวเลขที่ต้องการ (0-9)</div>
+                        <input type="text" id="input-a" class="w-full p-2 border rounded text-center" placeholder="เช่น 1,3">
+                    </div>
+                    <div class="space-y-2 border rounded-lg p-3 set-b-bg">
+                        <label class="block text-center font-medium set-b-text">ชุด b</label>
+                        <div class="text-center text-sm text-gray-500 mb-2">กรอกตัวเลขที่ต้องการ (0-9)</div>
+                        <input type="text" id="input-b" class="w-full p-2 border rounded text-center" placeholder="เช่น 2,4">
+                    </div>
+                    <div class="space-y-2 border rounded-lg p-3 set-c-bg">
+                        <label class="block text-center font-medium set-c-text">ชุด c</label>
+                        <div class="text-center text-sm text-gray-500 mb-2">กรอกตัวเลขที่ต้องการ (0-9)</div>
+                        <input type="text" id="input-c" class="w-full p-2 border rounded text-center" placeholder="เช่น 0,7">
+                    </div>
+                    <div class="space-y-2 border rounded-lg p-3 set-d-bg">
+                        <label class="block text-center font-medium set-d-text">ชุด d</label>
+                        <div class="text-center text-sm text-gray-500 mb-2">กรอกตัวเลขที่ต้องการ (0-9)</div>
+                        <input type="text" id="input-d" class="w-full p-2 border rounded text-center" placeholder="เช่น 1,8">
+                    </div>
+                </div>
+
+                <button id="generate-single" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition">สุ่มตัวเลข</button>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-3">ตารางชุดตัวเลขเดียว</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border rounded-lg p-4 bg-white shadow-sm set-a-bg">
+                        <h4 class="text-center font-medium mb-3 set-a-text">ชุด a</h4>
+                        <div id="grid-a" class="grid grid-cols-5 gap-2"></div>
+                    </div>
+                    <div class="border rounded-lg p-4 bg-white shadow-sm set-b-bg">
+                        <h4 class="text-center font-medium mb-3 set-b-text">ชุด b</h4>
+                        <div id="grid-b" class="grid grid-cols-5 gap-2"></div>
+                    </div>
+                    <div class="border rounded-lg p-4 bg-white shadow-sm set-c-bg">
+                        <h4 class="text-center font-medium mb-3 set-c-text">ชุด c</h4>
+                        <div id="grid-c" class="grid grid-cols-5 gap-2"></div>
+                    </div>
+                    <div class="border rounded-lg p-4 bg-white shadow-sm set-d-bg">
+                        <h4 class="text-center font-medium mb-3 set-d-text">ชุด d</h4>
+                        <div id="grid-d" class="grid grid-cols-5 gap-2"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-3">ตรวจสอบผล</h3>
+                <div class="bg-gray-50 p-4 rounded-lg border mb-4">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ผลที่ออก (ตัวเลขเดียว อย่างน้อย 3 ค่า คั่นด้วยเครื่องหมายจุลภาค)</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="check-results-single-input" placeholder="เช่น 4,1,7" class="flex-1 p-3 border rounded-lg text-center text-xl font-medium" />
+                            <button id="check-results-single-btn" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition">ตรวจสอบ</button>
+                        </div>
+                    </div>
+                    
+                    <div id="result-check-single-display" class="mb-4 hidden">
+                        <div class="p-4 rounded-lg bg-gray-100 border">
+                            <h4 class="font-medium mb-2">ผลการตรวจสอบ:</h4>
+                            <div id="result-check-single-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-3">พยากรณ์ 10 รอบถัดไป</h3>
+                <div class="flex items-center gap-4 mb-4">
+                    <button id="predict-single" class="flex-1 bg-purple-600 text-white py-3 rounded-lg font-medium hover:bg-purple-
