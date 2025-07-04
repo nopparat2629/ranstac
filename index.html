@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ระบบสุ่มตัวเลข</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+/* สีสำหรับแต่ละชุด */
+.set-A-bg {
+    background-color: #dbeafe;
+    border-color: #3b82f6;
+}
+.set-A-text {
+    color: #1e40af;
+}
+
+.set-B-bg {
+    background-color: #fef3c7;
+    border-color: #f59e0b;
+}
+.set-B-text {
+    color: #92400e;
+}
+
+.set-C-bg {
+    background-color: #dcfce7;
+    border-color: #22c55e;
+}
+.set-C-text {
+    color: #166534;
+}
+
+.set-D-bg {
+    background-color: #fae8ff;
+    border-color: #d946ef;
+}
+.set-D-text {
+    color: #86198f;
+}
+
+.loading-spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border-left-color: #4f46e5;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.match-cell {
+    background-color: #bbf7d0;
+    color: #166534;
+    font-weight: 500;
+}
+
+.digit-btn {
+    transition: all 0.2s ease;
+}
+
+.digit-btn.active {
+    background-color: #4f46e5;
+    color: white;
+    transform: scale(0.95);
+}
+
+.column-btn.active {
+    background-color: #4f46e5;
+    color: white;
+}
+
+.set-btn.active {
+    transform: scale(0.98);
+    box-shadow: 0 0 0 2px white, 0 0 0 4px currentColor;
+}
+  </style>
+</head>
+<body>
+<!-- BODY + SCRIPT รวมกันจะวางที่นี่ -->
+<div class="flex border-b">
+<!-- เริ่มต้น body UI -->
+...
+<!-- ต่อด้วย script แบบ inline -->
+<script>
+// ทั้ง script JS ทั้งหมดที่ผู้ใช้ให้มา จะใส่ตรงนี้
+// รวม logic: ป้องกันเลขซ้ำในชุด A, B, C, D ด้วย
+</script>
+</body>
+</html>
