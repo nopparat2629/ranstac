@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>สุ่มชุดเลข 2 หลักไม่ซ้ำข้ามชุด</title>
+  <title>lotto-AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans">
@@ -1316,3 +1316,22 @@
       } else {
         filteredNumbersDiv.textContent = filteredNumbers.join(', ');
       }
+    });
+
+    // Initialize empty grids
+    document.addEventListener('DOMContentLoaded', function() {
+      const sets = ['A', 'B', 'C', 'D'];
+      sets.forEach(set => {
+        const grid = document.getElementById(`grid-${set}`);
+        grid.innerHTML = '';
+        for (let i = 0; i < 25; i++) {
+          const box = document.createElement('div');
+          box.className = 'number-box';
+          box.textContent = '-';
+          grid.appendChild(box);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
