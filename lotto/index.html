@@ -1,0 +1,855 @@
+I'll update the prediction system to match your requirements. The system will randomly generate sets A, B, C, D and stop when the first rounds (1, 2, 3, etc.) match the expected sets from the analysis. Users can select both the total number of rounds and how many consecutive matching rounds are required.
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>สุ่มชุดเลข 2 หลักไม่ซ้ำข้ามชุด</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+  <div class="max-w-5xl mx-auto py-10 px-4">
+    <h1 class="text-2xl font-bold mb-6 text-center">สุ่มชุดเลข 2 หลัก 4 ชุด (A–D)</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div class="space-y-2 border rounded-lg p-3 set-A-bg">
+        <label class="block text-center font-medium set-A-text">ชุด A</label>
+        <textarea id="input-A" class="w-full p-2 border rounded h-24" placeholder="เช่น 01,15,27"></textarea>
+      </div>
+      <div class="space-y-2 border rounded-lg p-3 set-B-bg">
+        <label class="block text-center font-medium set-B-text">ชุด B</label>
+        <textarea id="input-B" class="w-full p-2 border rounded h-24" placeholder="เช่น 02,16,28"></textarea>
+      </div>
+      <div class="space-y-2 border rounded-lg p-3 set-C-bg">
+        <label class="block text-center font-medium set-C-text">ชุด C</label>
+        <textarea id="input-C" class="w-full p-2 border rounded h-24" placeholder="เช่น 03,17,29"></textarea>
+      </div>
+      <div class="space-y-2 border rounded-lg p-3 set-D-bg">
+        <label class="block text-center font-medium set-D-text">ชุด D</label>
+        <textarea id="input-D" class="w-full p-2 border rounded h-24" placeholder="เช่น 04,18,30"></textarea>
+      </div>
+    </div>
+
+    <button id="generate-double" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition mb-6">
+      สุ่มตัวเลข (ไม่ซ้ำข้ามชุด)
+    </button>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div class="border rounded-lg p-4 bg-white shadow-sm set-A-bg">
+        <h4 class="text-center font-medium mb-3 set-A-text">ชุด A</h4>
+        <div id="grid-A" class="grid grid-cols-5 gap-2"></div>
+      </div>
+      <div class="border rounded-lg p-4 bg-white shadow-sm set-B-bg">
+        <h4 class="text-center font-medium mb-3 set-B-text">ชุด B</h4>
+        <div id="grid-B" class="grid grid-cols-5 gap-2"></div>
+      </div>
+      <div class="border rounded-lg p-4 bg-white shadow-sm set-C-bg">
+        <h4 class="text-center font-medium mb-3 set-C-text">ชุด C</h4>
+        <div id="grid-C" class="grid grid-cols-5 gap-2"></div>
+      </div>
+      <div class="border rounded-lg p-4 bg-white shadow-sm set-D-bg">
+        <h4 class="text-center font-medium mb-3 set-D-text">ชุด D</h4>
+        <div id="grid-D" class="grid grid-cols-5 gap-2"></div>
+      </div>
+    </div>
+
+    <!-- Analysis System -->
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+      <h2 class="text-xl font-bold mb-4">ระบบวิเคราะห์</h2>
+      
+      <div class="mb-4">
+        <label class="block mb-2 font-medium">ผลย้อนหลัง (เลข 2 หลัก คั่นด้วยเครื่องหมายคอมม่า)</label>
+        <textarea id="past-results" class="w-full p-3 border rounded h-24" placeholder="เช่น 01,15,27,42,56,78,90"></textarea>
+      </div>
+      
+      <button id="analyze-btn" class="bg-green-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-700 transition mb-4">
+        วิเคราะห์ผล
+      </button>
+      
+      <div id="analysis-results" class="border rounded-lg p-4 bg-gray-50">
+        <h3 class="font-medium mb-2">ผลการวิเคราะห์:</h3>
+        <div id="analysis-content" class="space-y-2">
+          <p class="text-gray-500">กรุณากรอกผลย้อนหลังและกดวิเคราะห์</p>
+        </div>
+        <div id="expected-sets" class="mt-4 pt-4 border-t hidden">
+          <h3 class="font-medium mb-2">ชุดที่คาดหวัง (เรียงตามผลย้อนหลัง):</h3>
+          <div id="expected-sets-content" class="flex flex-wrap gap-2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prediction System -->
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+      <h2 class="text-xl font-bold mb-4">ระบบพยากรณ์</h2>
+      
+      <div class="flex flex-wrap gap-4 mb-4">
+        <div>
+          <label class="block mb-2 font-medium">จำนวนรอบที่ต้องการ</label>
+          <input type="number" id="prediction-rounds" class="w-24 p-2 border rounded" value="5" min="3" max="10">
+        </div>
+        <div>
+          <label class="block mb-2 font-medium">จำนวนรอบที่ต้องตรงกัน</label>
+          <input type="number" id="required-matches" class="w-24 p-2 border rounded" value="3" min="1" max="10">
+        </div>
+      </div>
+      
+      <div class="mb-4">
+        <p class="text-sm text-gray-600">ระบบจะทำการสุ่มชุด A, B, C, D และเปรียบเทียบกับผลการวิเคราะห์ จนกว่าจะได้ผลตรงกันตามจำนวนรอบที่กำหนด</p>
+      </div>
+      
+      <button id="predict-btn" class="bg-purple-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-purple-700 transition mb-4">
+        พยากรณ์ผล
+      </button>
+      
+      <div class="mb-4">
+        <div class="flex items-center">
+          <div class="w-4 h-4 bg-green-500 mr-2"></div>
+          <span class="text-sm">= ตรงกับผลวิเคราะห์</span>
+        </div>
+      </div>
+      
+      <div id="prediction-results" class="border rounded-lg p-4 bg-gray-50">
+        <h3 class="font-medium mb-3">ผลการพยากรณ์:</h3>
+        <div id="prediction-content" class="space-y-4">
+          <p class="text-gray-500">กดปุ่มพยากรณ์เพื่อดูผลการทำนาย</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Number Selection System -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+      <h2 class="text-xl font-bold mb-4">ระบบคัดเลขเด่น</h2>
+      
+      <div class="mb-6">
+        <h3 class="font-medium mb-3">เลือกชุด</h3>
+        <div class="flex flex-wrap gap-2">
+          <button class="set-selector px-4 py-2 rounded border" data-set="A">ชุด A</button>
+          <button class="set-selector px-4 py-2 rounded border" data-set="B">ชุด B</button>
+          <button class="set-selector px-4 py-2 rounded border" data-set="C">ชุด C</button>
+          <button class="set-selector px-4 py-2 rounded border" data-set="D">ชุด D</button>
+          <button id="select-all-sets" class="px-4 py-2 rounded border bg-gray-200">เลือกทั้งหมด</button>
+          <button id="reset-sets" class="px-4 py-2 rounded border bg-gray-200">รีเซ็ต</button>
+        </div>
+      </div>
+      
+      <div class="mb-6">
+        <h3 class="font-medium mb-3">เลือกคอลัมน์</h3>
+        <div class="flex flex-wrap gap-2">
+          <button class="column-selector px-4 py-2 rounded border" data-col="1">คอลัมน์ 1</button>
+          <button class="column-selector px-4 py-2 rounded border" data-col="2">คอลัมน์ 2</button>
+          <button class="column-selector px-4 py-2 rounded border" data-col="3">คอลัมน์ 3</button>
+          <button class="column-selector px-4 py-2 rounded border" data-col="4">คอลัมน์ 4</button>
+          <button class="column-selector px-4 py-2 rounded border" data-col="5">คอลัมน์ 5</button>
+          <button id="select-all-columns" class="px-4 py-2 rounded border bg-gray-200">เลือกทั้งหมด</button>
+          <button id="reset-columns" class="px-4 py-2 rounded border bg-gray-200">รีเซ็ต</button>
+        </div>
+      </div>
+      
+      <div class="mb-6">
+        <h3 class="font-medium mb-3">เลือกตัวเลข</h3>
+        <div class="flex flex-wrap gap-2">
+          <button class="digit-selector px-4 py-2 rounded border" data-digit="0">0</button>
+          <button class="digit-selector px-4 py-2 rounded border" data-digit="1">1</button>
+          <button class="digit-selector px-4 py-2 rounded border" data-digit="2">2</button>
+          <button class="digit-selector px-4 py-2 rounded border" data-digit="3">3</button>
+          <button class="digit-selector px-4 py-2 rounded border" data-digit="4">4</button>
+          <button class="digit-selector px-4 py-2 rounded border" data-digit="5">5</button>
+          <button class="digit-selector px-4 py-2 rounded border" data-digit="6">6</button>
+          <button class="digit-selector px-4 py-2 rounded border" data-digit="7">7</button>
+          <button class="digit-selector px-4 py-2 rounded border" data-digit="8">8</button>
+          <button class="digit-selector px-4 py-2 rounded border" data-digit="9">9</button>
+          <button id="select-all-digits" class="px-4 py-2 rounded border bg-gray-200">เลือกทั้งหมด</button>
+          <button id="reset-digits" class="px-4 py-2 rounded border bg-gray-200">รีเซ็ต</button>
+        </div>
+      </div>
+      
+      <button id="filter-numbers" class="bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition mb-4">
+        คัดกรองเลขเด่น
+      </button>
+      
+      <div class="border rounded-lg p-4 bg-gray-50">
+        <h3 class="font-medium mb-2">ผลการคัดกรอง:</h3>
+        <div id="filtered-numbers" class="p-3 border rounded bg-white min-h-[100px]">
+          <p class="text-gray-500">กรุณาเลือกเงื่อนไขและกดคัดกรอง</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .set-A-bg { background-color: #dbeafe; border-color: #3b82f6; }
+    .set-A-text { color: #1e40af; }
+    .set-B-bg { background-color: #fef3c7; border-color: #f59e0b; }
+    .set-B-text { color: #92400e; }
+    .set-C-bg { background-color: #dcfce7; border-color: #22c55e; }
+    .set-C-text { color: #166534; }
+    .set-D-bg { background-color: #fae8ff; border-color: #d946ef; }
+    .set-D-text { color: #86198f; }
+    .set-none-bg { background-color: #f3f4f6; border-color: #9ca3af; }
+    .set-none-text { color: #4b5563; }
+    .number-box {
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 0.375rem;
+      padding: 0.5rem;
+      text-align: center;
+      font-weight: 500;
+    }
+    .match-A { background-color: #dbeafe; border-color: #3b82f6; }
+    .match-B { background-color: #fef3c7; border-color: #f59e0b; }
+    .match-C { background-color: #dcfce7; border-color: #22c55e; }
+    .match-D { background-color: #fae8ff; border-color: #d946ef; }
+    .prediction-set {
+      border-radius: 0.375rem;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .prediction-number {
+      display: inline-block;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      margin: 0.25rem;
+      font-weight: 500;
+    }
+    .analysis-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .analysis-table th, .analysis-table td {
+      border: 1px solid #e5e7eb;
+      padding: 0.5rem;
+      text-align: center;
+    }
+    .analysis-table th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+    .match-cell {
+      background-color: #86efac;
+    }
+    .selected {
+      background-color: #4b5563;
+      color: white;
+      border-color: #374151;
+    }
+    .match-analysis {
+      background-color: #86efac !important;
+      border-color: #22c55e !important;
+    }
+    .prediction-attempts {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-top: 0.25rem;
+    }
+    .prediction-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    .prediction-table th, .prediction-table td {
+      border: 1px solid #e5e7eb;
+      padding: 0.75rem;
+      text-align: center;
+    }
+    .prediction-table th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+    .prediction-table tr.match-row td {
+      background-color: #d1fae5;
+    }
+    .analysis-rank {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
+      text-align: center;
+      border-radius: 50%;
+      background-color: #4b5563;
+      color: white;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+    .expected-set-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+
+  <script>
+    const tableData = { A: [], B: [], C: [], D: [] };
+    let currentPredictions = [];
+    let analysisResults = { A: 0, B: 0, C: 0, D: 0 };
+    let expectedSets = []; // Will store sets in order of appearance in past results
+    let pastResultsData = []; // Will store the past results for reference
+    let selectedSets = [];
+    let selectedColumns = [];
+    let selectedDigits = [];
+    
+    function validateDoubleInput(input) {
+      if (!input) return [];
+      return [...new Set(input.split(',').map(n => {
+        n = n.trim();
+        return n.length === 1 ? '0' + n : n;
+      }).filter(n => /^\d{2}$/.test(n)))];
+    }
+
+    document.getElementById('generate-double').addEventListener('click', function () {
+      const sets = ['A', 'B', 'C', 'D'];
+      const allUsedNumbers = new Set();
+      sets.forEach(set => tableData[set] = []);
+
+      // First, collect all manually entered numbers
+      sets.forEach(set => {
+        const input = document.getElementById(`input-${set}`).value;
+        const selected = validateDoubleInput(input);
+        
+        // Add valid numbers to the set's data
+        selected.forEach(num => {
+          if (!allUsedNumbers.has(num)) {
+            tableData[set].push(num);
+            allUsedNumbers.add(num);
+          }
+        });
+      });
+
+      // Generate random numbers for each set
+      sets.forEach(set => {
+        // Create a pool of available numbers (00-99) excluding already used ones
+        const availableNumbers = [];
+        for (let i = 0; i <= 99; i++) {
+          const num = i < 10 ? '0' + i : '' + i;
+          if (!allUsedNumbers.has(num)) {
+            availableNumbers.push(num);
+          }
+        }
+
+        // Shuffle available numbers
+        for (let i = availableNumbers.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [availableNumbers[i], availableNumbers[j]] = [availableNumbers[j], availableNumbers[i]];
+        }
+
+        // Add random numbers to fill the set (up to 25 numbers total)
+        while (tableData[set].length < 25 && availableNumbers.length > 0) {
+          const num = availableNumbers.pop();
+          tableData[set].push(num);
+          allUsedNumbers.add(num);
+        }
+
+        // Sort the numbers for display
+        tableData[set].sort((a, b) => parseInt(a) - parseInt(b));
+
+        // Display the numbers in the grid
+        const grid = document.getElementById(`grid-${set}`);
+        grid.innerHTML = '';
+        tableData[set].forEach(num => {
+          const box = document.createElement('div');
+          box.className = 'number-box';
+          box.textContent = num;
+          grid.appendChild(box);
+        });
+      });
+    });
+
+    // Analysis system
+    document.getElementById('analyze-btn').addEventListener('click', function() {
+      const pastResults = validateDoubleInput(document.getElementById('past-results').value);
+      const analysisContent = document.getElementById('analysis-content');
+      const expectedSetsDiv = document.getElementById('expected-sets');
+      const expectedSetsContent = document.getElementById('expected-sets-content');
+      
+      if (pastResults.length === 0) {
+        analysisContent.innerHTML = '<p class="text-red-500">กรุณากรอกผลย้อนหลังที่ถูกต้อง</p>';
+        expectedSetsDiv.classList.add('hidden');
+        return;
+      }
+      
+      // Store past results for reference
+      pastResultsData = pastResults;
+      
+      analysisContent.innerHTML = '';
+      expectedSetsContent.innerHTML = '';
+      
+      // Create analysis table
+      const table = document.createElement('table');
+      table.className = 'analysis-table';
+      
+      // Create header row
+      const thead = document.createElement('thead');
+      const headerRow = document.createElement('tr');
+      
+      const numberHeader = document.createElement('th');
+      numberHeader.textContent = 'เลข';
+      headerRow.appendChild(numberHeader);
+      
+      for (const set of ['A', 'B', 'C', 'D']) {
+        const setHeader = document.createElement('th');
+        setHeader.textContent = `ชุด ${set}`;
+        setHeader.className = `set-${set}-text`;
+        headerRow.appendChild(setHeader);
+      }
+      
+      const resultHeader = document.createElement('th');
+      resultHeader.textContent = 'ชุดที่พบ';
+      headerRow.appendChild(resultHeader);
+      
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+      
+      // Create table body
+      const tbody = document.createElement('tbody');
+      
+      // Reset analysis results
+      analysisResults = { A: 0, B: 0, C: 0, D: 0, none: 0 };
+      expectedSets = []; // Reset expected sets
+      
+      pastResults.forEach(num => {
+        const row = document.createElement('tr');
+        
+        const numCell = document.createElement('td');
+        numCell.textContent = num;
+        numCell.className = 'font-medium';
+        row.appendChild(numCell);
+        
+        let found = false;
+        let foundSet = null;
+        
+        for (const set of ['A', 'B', 'C', 'D']) {
+          const setCell = document.createElement('td');
+          
+          if (tableData[set].includes(num)) {
+            setCell.textContent = '✓';
+            setCell.className = 'match-cell';
+            analysisResults[set]++;
+            found = true;
+            foundSet = set;
+          } else {
+            setCell.textContent = '-';
+          }
+          
+          row.appendChild(setCell);
+        }
+        
+        // Add a cell showing which set this number belongs to
+        const resultCell = document.createElement('td');
+        resultCell.className = 'font-medium';
+        
+        if (found) {
+          resultCell.textContent = `ชุด ${foundSet}`;
+          resultCell.className = `set-${foundSet}-text font-medium`;
+          expectedSets.push(foundSet);
+        } else {
+          resultCell.textContent = 'ไม่ระบุ';
+          resultCell.className = 'set-none-text font-medium';
+          analysisResults.none++;
+          expectedSets.push('none'); // Mark as not found in any set
+        }
+        
+        row.appendChild(resultCell);
+        tbody.appendChild(row);
+      });
+      
+      table.appendChild(tbody);
+      analysisContent.appendChild(table);
+      
+      // Display expected sets in order of appearance
+      expectedSetsDiv.classList.remove('hidden');
+      
+      // Only show the first 10 expected sets to avoid cluttering the UI
+      const displayLimit = Math.min(10, expectedSets.length);
+      
+      for (let i = 0; i < displayLimit; i++) {
+        const set = expectedSets[i];
+        const badge = document.createElement('div');
+        
+        if (set === 'none') {
+          badge.className = 'expected-set-badge set-none-bg';
+          badge.innerHTML = `<span class="analysis-rank">${i + 1}</span> ไม่ระบุ`;
+        } else {
+          badge.className = `expected-set-badge set-${set}-bg`;
+          badge.innerHTML = `<span class="analysis-rank">${i + 1}</span> ชุด ${set}`;
+        }
+        
+        expectedSetsContent.appendChild(badge);
+      }
+      
+      if (expectedSets.length > displayLimit) {
+        const moreText = document.createElement('div');
+        moreText.className = 'text-gray-500 mt-2';
+        moreText.textContent = `+ อีก ${expectedSets.length - displayLimit} ชุด`;
+        expectedSetsContent.appendChild(moreText);
+      }
+    });
+
+    // Prediction system
+    document.getElementById('predict-btn').addEventListener('click', function() {
+      const predictionContent = document.getElementById('prediction-content');
+      predictionContent.innerHTML = '';
+      
+      // Check if we have analysis results
+      if (expectedSets.length === 0 || pastResultsData.length === 0) {
+        predictionContent.innerHTML = '<p class="text-red-500">กรุณาวิเคราะห์ผลก่อนทำการพยากรณ์</p>';
+        return;
+      }
+      
+      // Get prediction parameters
+      const rounds = Math.max(3, parseInt(document.getElementById('prediction-rounds').value) || 5);
+      const requiredMatches = Math.min(rounds, Math.max(1, parseInt(document.getElementById('required-matches').value) || 3));
+      
+      // Create a status message
+      const statusDiv = document.createElement('div');
+      statusDiv.className = 'mb-4 p-3 bg-blue-100 rounded';
+      statusDiv.innerHTML = '<p class="font-medium">กำลังสุ่มผลพยากรณ์...</p>';
+      predictionContent.appendChild(statusDiv);
+      
+      // We'll use setTimeout to allow the UI to update before starting the intensive calculation
+      setTimeout(() => {
+        // Simulate the randomization process
+        let totalAttempts = 0;
+        let maxAttempts = 100000; // Limit to prevent infinite loops
+        let successfulPrediction = null;
+        
+        // Keep randomizing until we get enough consecutive matches at the beginning or reach max attempts
+        while (totalAttempts < maxAttempts) {
+          totalAttempts++;
+          
+          // Generate random sets for all rounds
+          const predictions = [];
+          
+          for (let i = 0; i < rounds; i++) {
+            const randomSet = ['A', 'B', 'C', 'D'][Math.floor(Math.random() * 4)];
+            const expectedSet = i < expectedSets.length ? expectedSets[i] : expectedSets[expectedSets.length - 1];
+            const isMatch = randomSet === expectedSet || (expectedSet === 'none'); // Match if expected is 'none' (unspecified)
+            
+            predictions.push({
+              round: i + 1,
+              set: randomSet,
+              expectedSet: expectedSet,
+              isMatch: isMatch
+            });
+          }
+          
+          // Check if we have enough consecutive matches at the beginning
+          let consecutiveMatches = 0;
+          for (let i = 0; i < requiredMatches && i < predictions.length; i++) {
+            if (predictions[i].isMatch) {
+              consecutiveMatches++;
+            } else {
+              break;
+            }
+          }
+          
+          // If we have enough consecutive matches at the beginning, we're done
+          if (consecutiveMatches >= requiredMatches) {
+            successfulPrediction = predictions;
+            break;
+          }
+        }
+        
+        // If we couldn't find a prediction with enough consecutive matches, use the last attempt
+        if (!successfulPrediction) {
+          // Generate one more random prediction
+          const predictions = [];
+          for (let i = 0; i < rounds; i++) {
+            const randomSet = ['A', 'B', 'C', 'D'][Math.floor(Math.random() * 4)];
+            const expectedSet = i < expectedSets.length ? expectedSets[i] : expectedSets[expectedSets.length - 1];
+            const isMatch = randomSet === expectedSet || (expectedSet === 'none'); // Match if expected is 'none' (unspecified)
+            
+            predictions.push({
+              round: i + 1,
+              set: randomSet,
+              expectedSet: expectedSet,
+              isMatch: isMatch
+            });
+          }
+          successfulPrediction = predictions;
+        }
+        
+        // Create prediction table
+        const table = document.createElement('table');
+        table.className = 'prediction-table';
+        
+        // Create header row
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        
+        const roundHeader = document.createElement('th');
+        roundHeader.textContent = 'รอบที่';
+        headerRow.appendChild(roundHeader);
+        
+        const setHeader = document.createElement('th');
+        setHeader.textContent = 'ชุด';
+        headerRow.appendChild(setHeader);
+        
+        const matchHeader = document.createElement('th');
+        matchHeader.textContent = 'ตรงกับผลวิเคราะห์';
+        headerRow.appendChild(matchHeader);
+        
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+        
+        // Create table body
+        const tbody = document.createElement('tbody');
+        
+        // Count consecutive matches at the beginning
+        let consecutiveMatches = 0;
+        for (let i = 0; i < successfulPrediction.length; i++) {
+          if (successfulPrediction[i].isMatch) {
+            consecutiveMatches++;
+          } else {
+            break;
+          }
+        }
+        
+        // Add rows to the table
+        successfulPrediction.forEach(prediction => {
+          const row = document.createElement('tr');
+          
+          // If this prediction matches the expected set, highlight the row
+          if (prediction.isMatch) {
+            row.className = 'match-row';
+          }
+          
+          const roundCell = document.createElement('td');
+          roundCell.textContent = prediction.round;
+          row.appendChild(roundCell);
+          
+          const setCell = document.createElement('td');
+          setCell.className = `set-${prediction.set}-text font-medium`;
+          setCell.textContent = `ชุด ${prediction.set}`;
+          row.appendChild(setCell);
+          
+          const matchCell = document.createElement('td');
+          matchCell.textContent = prediction.isMatch ? '✓' : '-';
+          if (prediction.isMatch) {
+            matchCell.className = 'font-bold text-green-600';
+          }
+          row.appendChild(matchCell);
+          
+          tbody.appendChild(row);
+        });
+        
+        table.appendChild(tbody);
+        
+        // Remove the status message and show the results
+        predictionContent.innerHTML = '';
+        predictionContent.appendChild(table);
+        
+        // Add a summary of the randomization process
+        const summaryDiv = document.createElement('div');
+        summaryDiv.className = 'mt-6 p-4 border rounded bg-gray-50';
+        
+        let summaryHTML = '<h3 class="font-medium mb-2">สรุปผลการพยากรณ์:</h3>';
+        
+        if (consecutiveMatches >= requiredMatches) {
+          summaryHTML += `<p>สุ่มทั้งหมด ${totalAttempts} ครั้ง จนได้ผลตรงกับผลย้อนหลัง ${consecutiveMatches} รอบแรกติดต่อกัน (ต้องการอย่างน้อย ${requiredMatches} รอบ)</p>`;
+          
+          // Calculate probability
+          const probability = Math.pow(0.25, requiredMatches);
+          const percentProbability = (probability * 100).toFixed(6);
+          summaryHTML += `<p>โอกาสที่จะสุ่มได้ตรงกับผลย้อนหลังอย่างน้อย ${requiredMatches} รอบแรกติดต่อกัน: ${percentProbability}%</p>`;
+        } else {
+          summaryHTML += `<p>ไม่สามารถสุ่มให้ตรงกับผลย้อนหลังได้ครบ ${requiredMatches} รอบแรกติดต่อกัน ภายใน ${maxAttempts} ครั้ง (ได้สูงสุด ${consecutiveMatches} รอบ)</p>`;
+        }
+        
+        // Add prediction numbers from the matched sets
+        summaryHTML += '<p class="mt-4 font-medium">ตัวเลขที่แนะนำ:</p>';
+        
+        // Get the matched sets from the prediction (only the consecutive matches at the beginning)
+        const matchedSets = [];
+        for (let i = 0; i < consecutiveMatches && i < requiredMatches; i++) {
+          if (successfulPrediction[i].expectedSet !== 'none') {
+            matchedSets.push(successfulPrediction[i].set);
+          }
+        }
+        
+        // If we have matched sets, show numbers from those sets
+        if (matchedSets.length > 0) {
+          // Get 3 random numbers from each matched set
+          matchedSets.forEach((set, index) => {
+            if (tableData[set] && tableData[set].length > 0) {
+              // Get up to 3 random numbers from this set
+              const setNumbers = [...tableData[set]]; // Create a copy
+              for (let i = setNumbers.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [setNumbers[i], setNumbers[j]] = [setNumbers[j], setNumbers[i]];
+              }
+              
+              const selectedNumbers = setNumbers.slice(0, 3);
+              summaryHTML += `<p>ชุด ${set} (รอบที่ ${index + 1}): ${selectedNumbers.join(', ')}</p>`;
+            }
+          });
+        } else {
+          summaryHTML += '<p class="text-gray-500">ไม่พบชุดที่ตรงกับผลย้อนหลัง</p>';
+        }
+        
+        summaryDiv.innerHTML = summaryHTML;
+        predictionContent.appendChild(summaryDiv);
+      }, 100);
+    });
+
+    // Number Selection System
+    // Set selection
+    document.querySelectorAll('.set-selector').forEach(button => {
+      button.addEventListener('click', function() {
+        const set = this.getAttribute('data-set');
+        
+        if (selectedSets.includes(set)) {
+          // Remove from selection
+          selectedSets = selectedSets.filter(s => s !== set);
+          this.classList.remove('selected');
+        } else {
+          // Add to selection
+          selectedSets.push(set);
+          this.classList.add('selected');
+        }
+      });
+    });
+    
+    document.getElementById('select-all-sets').addEventListener('click', function() {
+      selectedSets = ['A', 'B', 'C', 'D'];
+      document.querySelectorAll('.set-selector').forEach(button => {
+        button.classList.add('selected');
+      });
+    });
+    
+    document.getElementById('reset-sets').addEventListener('click', function() {
+      selectedSets = [];
+      document.querySelectorAll('.set-selector').forEach(button => {
+        button.classList.remove('selected');
+      });
+    });
+    
+    // Column selection
+    document.querySelectorAll('.column-selector').forEach(button => {
+      button.addEventListener('click', function() {
+        const col = this.getAttribute('data-col');
+        
+        if (selectedColumns.includes(col)) {
+          // Remove from selection
+          selectedColumns = selectedColumns.filter(c => c !== col);
+          this.classList.remove('selected');
+        } else {
+          // Add to selection
+          selectedColumns.push(col);
+          this.classList.add('selected');
+        }
+      });
+    });
+    
+    document.getElementById('select-all-columns').addEventListener('click', function() {
+      selectedColumns = ['1', '2', '3', '4', '5'];
+      document.querySelectorAll('.column-selector').forEach(button => {
+        button.classList.add('selected');
+      });
+    });
+    
+    document.getElementById('reset-columns').addEventListener('click', function() {
+      selectedColumns = [];
+      document.querySelectorAll('.column-selector').forEach(button => {
+        button.classList.remove('selected');
+      });
+    });
+    
+    // Digit selection
+    document.querySelectorAll('.digit-selector').forEach(button => {
+      button.addEventListener('click', function() {
+        const digit = this.getAttribute('data-digit');
+        
+        if (selectedDigits.includes(digit)) {
+          // Remove from selection
+          selectedDigits = selectedDigits.filter(d => d !== digit);
+          this.classList.remove('selected');
+        } else {
+          // Add to selection
+          selectedDigits.push(digit);
+          this.classList.add('selected');
+        }
+      });
+    });
+    
+    document.getElementById('select-all-digits').addEventListener('click', function() {
+      selectedDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+      document.querySelectorAll('.digit-selector').forEach(button => {
+        button.classList.add('selected');
+      });
+    });
+    
+    document.getElementById('reset-digits').addEventListener('click', function() {
+      selectedDigits = [];
+      document.querySelectorAll('.digit-selector').forEach(button => {
+        button.classList.remove('selected');
+      });
+    });
+    
+    // Filter numbers
+    document.getElementById('filter-numbers').addEventListener('click', function() {
+      const filteredNumbersDiv = document.getElementById('filtered-numbers');
+      
+      if (selectedSets.length === 0 || selectedColumns.length === 0 || selectedDigits.length === 0) {
+        filteredNumbersDiv.innerHTML = '<p class="text-red-500">กรุณาเลือกชุด, คอลัมน์ และตัวเลขที่ต้องการ</p>';
+        return;
+      }
+      
+      // Get all numbers from selected sets
+      let filteredNumbers = [];
+      
+      selectedSets.forEach(set => {
+        if (tableData[set] && tableData[set].length > 0) {
+          // Get numbers from selected columns (positions in the grid)
+          selectedColumns.forEach(col => {
+            const colIndex = parseInt(col) - 1;
+            const startIdx = colIndex * 5;
+            const endIdx = startIdx + 5;
+            
+            // Get numbers from this column in the grid
+            const colNumbers = tableData[set].slice(startIdx, endIdx);
+            
+            // Filter by selected digits
+            colNumbers.forEach(num => {
+              // Check if either digit matches selected digits
+              const firstDigit = num[0];
+              const secondDigit = num[1];
+              
+              if (selectedDigits.includes(firstDigit) || selectedDigits.includes(secondDigit)) {
+                filteredNumbers.push(num);
+              }
+            });
+          });
+        }
+      });
+      
+      // Remove duplicates and sort
+      filteredNumbers = [...new Set(filteredNumbers)].sort((a, b) => parseInt(a) - parseInt(b));
+      
+      if (filteredNumbers.length === 0) {
+        filteredNumbersDiv.innerHTML = '<p class="text-gray-500">ไม่พบตัวเลขที่ตรงตามเงื่อนไข</p>';
+      } else {
+        filteredNumbersDiv.textContent = filteredNumbers.join(', ');
+      }
+    });
+
+    // Initialize empty grids
+    document.addEventListener('DOMContentLoaded', function() {
+      const sets = ['A', 'B', 'C', 'D'];
+      sets.forEach(set => {
+        const grid = document.getElementById(`grid-${set}`);
+        grid.innerHTML = '';
+        for (let i = 0; i < 25; i++) {
+          const box = document.createElement('div');
+          box.className = 'number-box';
+          box.textContent = '-';
+          grid.appendChild(box);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
